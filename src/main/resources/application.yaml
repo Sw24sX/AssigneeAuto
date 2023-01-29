@@ -1,0 +1,41 @@
+auto-assignee:
+  choose:
+    part:
+      number-changes-merge-request-files:
+        coefficient: '1'
+        enable: 'true'
+      minimize-count-review:
+        coefficient: '1'
+        enable: 'false'
+  excluded:
+    part:
+      max-merge-request-per-reviewer:
+        max-merge-requests: '4'
+        enable: 'false'
+      review-task-branch:
+        enable: 'false'
+      exclude-author:
+        enable: 'false'
+
+git:
+  lab:
+    api:
+      url: ${GITLAB_URL}
+      project-id: ${GITLAB_PROJECT_ID}
+      token: ${GITLAB_TOKEN}
+      username: ${GITLAB_USERNAME}
+  repo:
+    url: ${GIT_REPO_URL}
+    base-branch-name: ${GIT_REPO_BASE_BRANCH_NAME}
+    path: ${GIT_REPO_PATH}
+
+spring:
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+    enabled: 'true'
+  datasource:
+    password: ${postgres.password}
+    driver-class-name: org.postgresql.Driver
+    username: ${postgres.username}
+    url: jdbc:postgresql://${postgres.host}:${postgres.port:5432}/${postgres.db-name:dr}
+
