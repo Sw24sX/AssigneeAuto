@@ -49,7 +49,7 @@ public class SlackUtil {
                                         .text(PlainTextObject.builder()
                                                 .text("Отправить")
                                                 .build())
-//                                        .url("/slack/test")
+                                        .value("hello")
                                         .build()
                         ))
                         .build()

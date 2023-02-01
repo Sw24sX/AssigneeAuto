@@ -25,6 +25,14 @@ public class SlackBoltAppConfig {
         var app = new App(appConfig);
         commands.forEach(c -> app.command(c.getCommandName(), c));
 //        app.command("/hello", (req, ctx) -> ctx.ack("Hi there!"));
+        app.blockAction("ping-again", (req, ctx) -> {
+            String value = req.getPayload().getActions().get(0).getValue(); // "button's value"
+            if (req.getPayload().getResponseUrl() != null) {
+                // Post a message to the same channel if it's a block in a message
+                ctx.respond("You've sent " + value + " by clicking the button!");
+            }
+            return ctx.ack();
+        });
         return app;
     }
 }
