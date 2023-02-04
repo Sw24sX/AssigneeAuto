@@ -1,8 +1,6 @@
 package com.example.assigneeauto.persistance.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.gitlab4j.api.models.AccessLevel;
 
 import javax.persistence.*;
@@ -10,15 +8,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "reviewer")
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reviewer extends BaseEntity {
 
-    @Column(name = "access_level_gitlab1")
-    private AccessLevel accessLevel;
+    @Column(name = "access_level_gitlab")
+    private AccessLevel accessLevelGitLab;
 
-    @Column(name = "username")
     private String username;
 
     @Column(name = "member_id")
@@ -31,5 +30,6 @@ public class Reviewer extends BaseEntity {
     private String gitUsername;
 
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<HistoryReview> historyReviews;
 }

@@ -2,9 +2,13 @@ package com.example.assigneeauto.assignee;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 public class Candidate implements Comparable {
     private Reviewer reviewer;
