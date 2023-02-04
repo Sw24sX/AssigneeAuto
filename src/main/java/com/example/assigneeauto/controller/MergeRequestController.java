@@ -28,7 +28,7 @@ public class MergeRequestController {
 
     @PostMapping("{merge-request-iid}")
     public MergeRequest setAutoAssignee(@PathVariable("merge-request-iid") Long mergeRequestIid) {
-
-        return mergeRequestService.setAutoAssignee(mergeRequestIid);
+        var mergeRequest = mergeRequestService.getMergeRequestGitLab(mergeRequestIid);
+        return mergeRequestService.setAutoAssignee(mergeRequest);
     }
 }

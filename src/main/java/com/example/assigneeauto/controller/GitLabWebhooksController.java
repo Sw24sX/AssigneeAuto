@@ -20,6 +20,6 @@ public class GitLabWebhooksController {
     @PostMapping("merge-request")
     public void mergeRequestEvent(@RequestBody MergeRequestEventGitLab event) {
         var mergeRequestIid = event.getObjectAttributes().getIid();
-        mergeRequestService.setAutoAssignee(mergeRequestIid);
+        mergeRequestService.setAutoAssigneeOrIgnore(mergeRequestIid);
     }
 }

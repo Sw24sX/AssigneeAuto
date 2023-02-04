@@ -58,7 +58,7 @@ public class ReviewerServiceImpl implements ReviewerService {
         reviewer.setReviewAccess(true);
         reviewer.setUsername(member.getUsername());
         reviewer.setMemberId(member.getId());
-        reviewer.setAccessLevel(member.getAccessLevel());
+        reviewer.setAccessLevelGitLab(member.getAccessLevel());
         reviewer.setGitUsername(gitUsername);
         return reviewerRepository.save(reviewer);
     }
