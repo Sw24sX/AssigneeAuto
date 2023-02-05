@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Сервис для управления списокм ревьюверов
  */
-public interface ReviewerService {
+public interface ReviewerServiceApi {
     /**
      * Вернуть полный список ревьюверов
      * @return список ревьюверов

@@ -2,7 +2,8 @@ package com.example.assigneeauto.service.impl;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.properties.GitlabApiProperties;
-import com.example.assigneeauto.service.GitlabApiService;
+import com.example.assigneeauto.service.GitlabServiceApi;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApi;
@@ -16,19 +17,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Slf4j
-public class GitlabApiServiceImpl implements GitlabApiService {
+@RequiredArgsConstructor
+public class GitlabService implements GitlabServiceApi {
 
     private final GitlabApiProperties gitlabApiProperties;
     private final GitLabApi gitLabApi;
-
-    public GitlabApiServiceImpl(GitlabApiProperties gitlabApiProperties) {
-
-        this.gitlabApiProperties = gitlabApiProperties;
-        this.gitLabApi = new GitLabApi(gitlabApiProperties.getUrl(), gitlabApiProperties.getToken());
-    }
 
     @Override
     @Cacheable(value = "members")

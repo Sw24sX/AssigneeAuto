@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * Сервис для управления api Gitlab
  */
-public interface GitlabApiService {
+public interface GitlabServiceApi {
 
     /**
      * Список участников проекта

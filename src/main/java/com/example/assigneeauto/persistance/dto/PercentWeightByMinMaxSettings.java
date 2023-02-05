@@ -1,7 +1,7 @@
 package com.example.assigneeauto.persistance.dto;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
-import com.example.assigneeauto.service.WeightByNotValues;
+import com.example.assigneeauto.service.WeightByNotValuesApi;
 import lombok.Builder;
 import lombok.Data;
 import org.gitlab4j.api.models.MergeRequest;
@@ -22,7 +22,7 @@ public class PercentWeightByMinMaxSettings {
     /**
      * Реализация рассчета веса для каждого ревьювера
      */
-    private final WeightByNotValues weightByNotValues;
+    private final WeightByNotValuesApi weightByNotValuesApi;
 
     /**
      * Инвертировать результат

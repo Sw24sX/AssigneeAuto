@@ -4,10 +4,10 @@ import com.example.assigneeauto.assignee.PartChooseAssignee;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.dto.PercentWeightByMinMaxSettings;
 import com.example.assigneeauto.persistance.properties.choose.assignee.properties.NumberChangesMergeRequestFilesProperties;
-import com.example.assigneeauto.service.GitService;
-import com.example.assigneeauto.service.PercentWeightByMinMaxValues;
-import com.example.assigneeauto.service.ReviewerService;
-import com.example.assigneeauto.service.WeightByNotValues;
+import com.example.assigneeauto.service.GitServiceApi;
+import com.example.assigneeauto.service.PercentWeightByMinMaxValuesApi;
+import com.example.assigneeauto.service.ReviewerServiceApi;
+import com.example.assigneeauto.service.WeightByNotValuesApi;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -27,34 +27,34 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
 
-    private final GitService gitService;
-    private final ReviewerService reviewerService;
-    private final PercentWeightByMinMaxValues percentWeightByMinMaxValues;
+    private final GitServiceApi gitServiceApi;
+    private final ReviewerServiceApi reviewerServiceApi;
+    private final PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi;
 
     protected NumberChangesMergeRequestFiles(NumberChangesMergeRequestFilesProperties properties,
-                                             GitService gitService, ReviewerService reviewerService,
-                                             PercentWeightByMinMaxValues percentWeightByMinMaxValues) {
+                                             GitServiceApi gitServiceApi, ReviewerServiceApi reviewerServiceApi,
+                                             PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi) {
         super(properties);
-        this.gitService = gitService;
-        this.reviewerService = reviewerService;
-        this.percentWeightByMinMaxValues = percentWeightByMinMaxValues;
+        this.gitServiceApi = gitServiceApi;
+        this.reviewerServiceApi = reviewerServiceApi;
+        this.percentWeightByMinMaxValuesApi = percentWeightByMinMaxValuesApi;
     }
 
     @Override
     protected Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run NumberChangesMergeRequestFiles for reviewer {}", reviewer.getUsername());
         String newBranchName = mergeRequest.getSourceBranch();
-        gitService.updateRepository();
+        gitServiceApi.updateRepository();
         PercentWeightByMinMaxSettings settings = PercentWeightByMinMaxSettings
                 .builder()
                 .reviewer(reviewer)
                 .mergeRequest(mergeRequest)
-                .weightByNotValues(new CurrentWeight(newBranchName))
+                .weightByNotValuesApi(new CurrentWeight(newBranchName))
                 .build();
-        return percentWeightByMinMaxValues.getCorrectWeight(settings);
+        return percentWeightByMinMaxValuesApi.getCorrectWeight(settings);
     }
 
-    private class CurrentWeight implements WeightByNotValues {
+    private class CurrentWeight implements WeightByNotValuesApi {
 
         private static final String CACHE_KEY = "NumberChangesMergeRequestFiles";
         private final String newBranchName;
@@ -67,9 +67,9 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
         public Integer getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             int result = 0;
 
-            for (DiffEntry diff : gitService.getDiffBranches(newBranchName)) {
+            for (DiffEntry diff : gitServiceApi.getDiffBranches(newBranchName)) {
                 // TODO: 05.02.2023 blame result по какой то причине может быть null
-                BlameResult blameResult = gitService.getBlameFile(diff.getNewPath());
+                BlameResult blameResult = gitServiceApi.getBlameFile(diff.getNewPath());
                 if (blameResult == null) {
                     log.warn("In NumberChangesMergeRequestFiles, 'blame result' for reviewer {} is null", reviewer.getUsername());
                     continue;
@@ -77,7 +77,7 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
 
                 for(int i = 0; i < blameResult.getResultContents().size(); i++) {
                     PersonIdent ident = blameResult.getSourceAuthor(i);
-                    if (reviewerService.isReviewerGitName(reviewer, ident.getName())) {
+                    if (reviewerServiceApi.isReviewerGitName(reviewer, ident.getName())) {
                         result++;
                     }
                 }

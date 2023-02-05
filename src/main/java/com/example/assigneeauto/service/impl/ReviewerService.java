@@ -3,8 +3,9 @@ package com.example.assigneeauto.service.impl;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.repository.ReviewerRepository;
-import com.example.assigneeauto.service.GitlabApiService;
-import com.example.assigneeauto.service.ReviewerService;
+import com.example.assigneeauto.service.GitlabServiceApi;
+import com.example.assigneeauto.service.ReviewerServiceApi;
+import lombok.RequiredArgsConstructor;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReviewerServiceImpl implements ReviewerService {
+@RequiredArgsConstructor
+public class ReviewerService implements ReviewerServiceApi {
 
-    private final GitlabApiService gitlabApiService;
+    private final GitlabServiceApi gitlabServiceApi;
     private final ReviewerRepository reviewerRepository;
-
-    public ReviewerServiceImpl(GitlabApiService gitlabApiService, ReviewerRepository reviewerRepository) {
-        this.gitlabApiService = gitlabApiService;
-        this.reviewerRepository = reviewerRepository;
-    }
 
     @Override
     public List<Reviewer> getAll() {
@@ -49,7 +46,7 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     private Reviewer createReviewer(String username, String gitUsername) throws GitLabApiException {
-        Member member = gitlabApiService.getListMembers().stream()
+        Member member = gitlabServiceApi.getListMembers().stream()
                 .filter(x -> x.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(() -> new AutoAssigneeException("Участник '%s' не найден в проекте", username));
@@ -78,7 +75,7 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     @Override
     public boolean isReviewerGitName(Reviewer reviewer, String name) {
-        // TODO: 16.10.2022 Добавить более серьезную проверку на соответствие ревьювера имени в репозитории
+        // TODO: 16.10.2022 Добавить поддержку нескольких имен в git для каждого ревьвера
         return reviewer.getGitUsername().equals(name);
     }
 }

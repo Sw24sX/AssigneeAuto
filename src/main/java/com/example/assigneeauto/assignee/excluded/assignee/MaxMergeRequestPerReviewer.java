@@ -4,7 +4,7 @@ import com.example.assigneeauto.assignee.PartExcludedAssignee;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.persistance.properties.excluded.assignee.properties.MaxMergeRequestPerReviewerProperties;
-import com.example.assigneeauto.service.GitlabApiService;
+import com.example.assigneeauto.service.GitlabServiceApi;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
@@ -20,13 +20,13 @@ import java.util.List;
 @Slf4j
 public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
 
-    private final GitlabApiService gitlabApiService;
+    private final GitlabServiceApi gitlabServiceApi;
     private final MaxMergeRequestPerReviewerProperties properties;
 
-    public MaxMergeRequestPerReviewer(GitlabApiService gitlabApiService,
+    public MaxMergeRequestPerReviewer(GitlabServiceApi gitlabServiceApi,
                                       MaxMergeRequestPerReviewerProperties properties) {
         super(properties);
-        this.gitlabApiService = gitlabApiService;
+        this.gitlabServiceApi = gitlabServiceApi;
         this.properties = properties;
     }
 
@@ -34,7 +34,7 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
     protected boolean getPartValue(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run MaxMergeRequestPerReviewer for reviewer {}", reviewer.getUsername());
         try {
-            List<MergeRequest> mergeRequests = gitlabApiService
+            List<MergeRequest> mergeRequests = gitlabServiceApi
                     .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
 
             return mergeRequests.size() >= properties.getMaxMergeRequests();

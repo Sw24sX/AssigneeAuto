@@ -5,9 +5,9 @@ import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.dto.PercentWeightByMinMaxSettings;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.persistance.properties.choose.assignee.properties.MinimizationCountReviewProperties;
-import com.example.assigneeauto.service.GitlabApiService;
-import com.example.assigneeauto.service.PercentWeightByMinMaxValues;
-import com.example.assigneeauto.service.WeightByNotValues;
+import com.example.assigneeauto.service.GitlabServiceApi;
+import com.example.assigneeauto.service.PercentWeightByMinMaxValuesApi;
+import com.example.assigneeauto.service.WeightByNotValuesApi;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MinimizationCountReview extends PartChooseAssignee {
 
-    private final GitlabApiService gitlabApiService;
-    private final PercentWeightByMinMaxValues percentWeightByMinMaxValues;
+    private final GitlabServiceApi gitlabServiceApi;
+    private final PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi;
 
-    public MinimizationCountReview(MinimizationCountReviewProperties properties, GitlabApiService gitlabApiService,
-                                   PercentWeightByMinMaxValues percentWeightByMinMaxValues) {
+    public MinimizationCountReview(MinimizationCountReviewProperties properties, GitlabServiceApi gitlabServiceApi,
+                                   PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi) {
         super(properties);
-        this.gitlabApiService = gitlabApiService;
-        this.percentWeightByMinMaxValues = percentWeightByMinMaxValues;
+        this.gitlabServiceApi = gitlabServiceApi;
+        this.percentWeightByMinMaxValuesApi = percentWeightByMinMaxValuesApi;
     }
 
     @Override
@@ -38,20 +38,20 @@ public class MinimizationCountReview extends PartChooseAssignee {
         PercentWeightByMinMaxSettings settings = PercentWeightByMinMaxSettings.builder()
                 .reviewer(reviewer)
                 .mergeRequest(mergeRequest)
-                .weightByNotValues(new CurrentWeight())
+                .weightByNotValuesApi(new CurrentWeight())
                 .isRevert(true)
                 .build();
-        return percentWeightByMinMaxValues.getCorrectWeight(settings);
+        return percentWeightByMinMaxValuesApi.getCorrectWeight(settings);
     }
 
-    private class CurrentWeight implements WeightByNotValues {
+    private class CurrentWeight implements WeightByNotValuesApi {
 
         private static final String CACHE_KEY = "MinimizationCountReview";
 
         @Override
         public Integer getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             try {
-                return gitlabApiService.getListMergeRequestByAssigneeId(reviewer.getMemberId(),
+                return gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(),
                         Constants.MergeRequestState.OPENED).size();
             } catch (GitLabApiException e) {
                 throw new AutoAssigneeException(e.getMessage());

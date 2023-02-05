@@ -2,7 +2,7 @@ package com.example.assigneeauto.assignee;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
-import com.example.assigneeauto.service.ReviewerService;
+import com.example.assigneeauto.service.ReviewerServiceApi;
 import org.gitlab4j.api.models.MergeRequest;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +13,18 @@ import java.util.Optional;
 public class FullChooseAssignee {
     private final List<? extends PartChooseAssignee> partsChooseAssignees;
     private final List<? extends PartExcludedAssignee> partsExcludedAssignee;
-    private final ReviewerService reviewerService;
+    private final ReviewerServiceApi reviewerServiceApi;
 
     public FullChooseAssignee(List<? extends PartChooseAssignee> partsChooseAssignees,
                               List<? extends PartExcludedAssignee> partsExcludedAssignee,
-                              ReviewerService reviewerService) {
+                              ReviewerServiceApi reviewerServiceApi) {
         this.partsChooseAssignees = partsChooseAssignees;
         this.partsExcludedAssignee = partsExcludedAssignee;
-        this.reviewerService = reviewerService;
+        this.reviewerServiceApi = reviewerServiceApi;
     }
 
     public Reviewer getAssignee(MergeRequest mergeRequest) {
-        List<Reviewer> reviewers = excludeReviewers(reviewerService.getAllActive(), mergeRequest);
+        List<Reviewer> reviewers = excludeReviewers(reviewerServiceApi.getAllActive(), mergeRequest);
         if (reviewers.size() <= 1) {
             return reviewers.stream()
                     .findFirst()

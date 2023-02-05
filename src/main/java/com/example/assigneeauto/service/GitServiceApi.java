@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Взаимодействие с git репозиторием
  */
-public interface GitService {
+public interface GitServiceApi {
 
     /**
      * Обновить репозиторий (git fetch + git pull)

@@ -1,7 +1,6 @@
 package com.example.assigneeauto.controller;
 
-import com.example.assigneeauto.persistance.util.SlackUtil;
-import com.example.assigneeauto.service.ReviewerService;
+import com.example.assigneeauto.service.ReviewerServiceApi;
 import com.slack.api.Slack;
 import com.slack.api.bolt.App;
 import com.slack.api.bolt.servlet.SlackAppServlet;
@@ -11,15 +10,9 @@ import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import com.slack.api.methods.response.conversations.ConversationsListResponse;
 import com.slack.api.model.Conversation;
-import com.slack.api.model.block.LayoutBlock;
-import com.slack.api.model.block.SectionBlock;
-import com.slack.api.model.block.composition.MarkdownTextObject;
-import com.slack.api.model.event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
@@ -31,7 +24,7 @@ import java.util.*;
 @WebServlet("/slack/events")
 public class SlackBotController extends SlackAppServlet {
 
-    public SlackBotController(ReviewerService reviewerService, App app) {
+    public SlackBotController(ReviewerServiceApi reviewerServiceApi, App app) {
         super(app);
     }
 

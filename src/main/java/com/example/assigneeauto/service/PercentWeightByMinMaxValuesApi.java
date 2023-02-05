@@ -7,7 +7,7 @@ import org.gitlab4j.api.models.MergeRequest;
 /**
  * Получение веса от 0 до 100 на основании рассчета минимального и максимального значения.
  */
-public interface PercentWeightByMinMaxValues {
+public interface PercentWeightByMinMaxValuesApi {
 
     /**
      * Рассчитывает вес ревьювера на основании минимального и максимального значения всех ревьюверов
@@ -18,10 +18,10 @@ public interface PercentWeightByMinMaxValues {
 
     /**
      * Рассчитывает вес ревьювера по переданной реализации
-     * @param weightByNotValues Реализация рассчета веса для каждого ревьювера
+     * @param weightByNotValuesApi Реализация рассчета веса для каждого ревьювера
      * @param reviewer ревьвер, для которого необходимо вычислить значение
      * @param mergeRequest обрабатываемый merge request
      * @return вес ревьювера
      */
-    Integer getWeightValueByReviewer(WeightByNotValues weightByNotValues, Reviewer reviewer, MergeRequest mergeRequest);
+    Integer getWeightValueByReviewer(WeightByNotValuesApi weightByNotValuesApi, Reviewer reviewer, MergeRequest mergeRequest);
 }

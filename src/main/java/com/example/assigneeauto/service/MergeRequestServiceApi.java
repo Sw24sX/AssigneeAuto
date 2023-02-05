@@ -3,7 +3,7 @@ package com.example.assigneeauto.service;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import org.gitlab4j.api.models.MergeRequest;
 
-public interface MergeRequestService {
+public interface MergeRequestServiceApi {
     void setAssignee(Long mergeRequestIid, Reviewer reviewer);
 
     boolean setAutoAssignee(MergeRequest mergeRequest);

@@ -1,7 +1,7 @@
 package com.example.assigneeauto.controller;
 
 import com.example.assigneeauto.persistance.dto.MergeRequestEventGitLab;
-import com.example.assigneeauto.service.MergeRequestService;
+import com.example.assigneeauto.service.MergeRequestServiceApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("gitlab/event")
 public class GitLabWebhooksController {
 
-    private final MergeRequestService mergeRequestService;
+    private final MergeRequestServiceApi mergeRequestServiceApi;
 
     @PostMapping("merge-request")
     public void mergeRequestEvent(@RequestBody MergeRequestEventGitLab event) {
         var mergeRequestIid = event.getObjectAttributes().getIid();
-        mergeRequestService.setAutoAssigneeOrIgnore(mergeRequestIid);
+        mergeRequestServiceApi.setAutoAssigneeOrIgnore(mergeRequestIid);
     }
 }
