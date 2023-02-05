@@ -1,11 +1,12 @@
 package com.example.assigneeauto.service;
 
+import com.example.assigneeauto.persistance.domain.Reviewer;
 import org.gitlab4j.api.models.MergeRequest;
 
 public interface MergeRequestService {
-    MergeRequest setAssignee(Long mergeRequestIid, Long assigneeId);
+    void setAssignee(Long mergeRequestIid, Reviewer reviewer);
 
-    MergeRequest setAutoAssignee(MergeRequest mergeRequest);
+    boolean setAutoAssignee(MergeRequest mergeRequest);
 
     /**
      * Автоматически определяет ревьювера или игнорирует его

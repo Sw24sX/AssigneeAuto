@@ -1,5 +1,6 @@
 package com.example.assigneeauto.service.impl;
 
+import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.properties.GitlabApiProperties;
 import com.example.assigneeauto.service.GitlabApiService;
 import lombok.extern.slf4j.Slf4j;
@@ -53,12 +54,16 @@ public class GitlabApiServiceImpl implements GitlabApiService {
 
 
     @Override
-    public MergeRequest setAssigneeToMergeRequest(Long mergeRequestIid, Long memberId) throws GitLabApiException {
+    public boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException {
         MergeRequestParams newParams = new MergeRequestParams();
-        newParams.withAssigneeId(memberId);
+        newParams.withAssigneeId(reviewer.getMemberId());
         var result = gitLabApi.getMergeRequestApi()
                 .updateMergeRequest(gitlabApiProperties.getProjectId(), mergeRequestIid, newParams);
-        log.info("For merge request {} was assigned reviewer {}", mergeRequestIid, memberId);
-        return result;
+        if (result.getAssignee() == null) {
+            log.warn("For merge request {} assign reviewer {} not success", mergeRequestIid, reviewer.getUsername());
+            return false;
+        }
+        log.info("For merge request {} assign reviewer {} success", mergeRequestIid, reviewer.getUsername());
+        return true;
     }
 }

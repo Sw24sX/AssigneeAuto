@@ -35,15 +35,15 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     }
 
     @Override
-    public MergeRequest setAssignee(Long mergeRequestIid, Long assigneeId) {
+    public void setAssignee(Long mergeRequestIid, Reviewer reviewer) {
 
         try {
             var projectMembers = gitlabApiService.getListMembers();
-            if (projectMembers.stream().noneMatch(member -> Objects.equals(member.getId(), assigneeId))) {
-                throw new AutoAssigneeException("Участник c id '%s' не найден в проекте", assigneeId.toString());
+            if (projectMembers.stream().noneMatch(member -> Objects.equals(member.getId(), reviewer.getMemberId()))) {
+                throw new AutoAssigneeException("Участник c id '%s' не найден в проекте", reviewer.getMemberId().toString());
             }
 
-            return gitlabApiService.setAssigneeToMergeRequest(mergeRequestIid, assigneeId);
+            gitlabApiService.setAssigneeToMergeRequest(mergeRequestIid, reviewer);
 
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());
@@ -52,18 +52,20 @@ public class MergeRequestServiceImpl implements MergeRequestService {
 
     @Override
     @Transactional
-    public MergeRequest setAutoAssignee(MergeRequest mergeRequest) {
+    public boolean setAutoAssignee(MergeRequest mergeRequest) {
 
         try {
             var reviewer = fullChooseAssignee.getAssignee(mergeRequest);
-            mergeRequest = gitlabApiService.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer.getMemberId());
-            updateReviewer(reviewer, mergeRequest);
+            var result = gitlabApiService.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer);
+            if (result) {
+                updateReviewer(reviewer, mergeRequest);
+            }
 
-            return mergeRequest;
+            return result;
 
         } catch (GitLabApiException e) {
             log.warn(e.getMessage());
-            return null;
+            return false;
         }
     }
 
@@ -71,16 +73,18 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     public boolean setAutoAssigneeOrIgnore(Long mergeRequestIid) {
         var historyReview = historyReviewRepository.findByMergeRequestIid(mergeRequestIid);
         if (historyReview != null) {
+            log.warn("Merge request {} was ignored, because it exist in history_review table with id {}",
+                    mergeRequestIid, historyReview.getId());
             return false;
         }
 
         var mergeRequest = getMergeRequestGitLab(mergeRequestIid);
         if (mergeRequest.getAssignee() != null) {
+            log.warn("Merge request {} was ignored, because assignee already exists", mergeRequestIid);
             return false;
         }
 
-        setAutoAssignee(mergeRequest);
-        return true;
+        return setAutoAssignee(mergeRequest);
     }
 
     @Override
@@ -98,9 +102,8 @@ public class MergeRequestServiceImpl implements MergeRequestService {
 
     private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest) {
         var taskBranch = mergeRequest.getSourceBranch();
-        // TODO: 04.02.2023 Сделать проверку по Iid
-        if (!historyReviewRepository.existsByBranchNameAndReviewer_Id(taskBranch, reviewer.getId())) {
-            HistoryReview historyReview = new HistoryReview();
+        if (!historyReviewRepository.existsByMergeRequestIid(mergeRequest.getIid())) {
+            var historyReview = new HistoryReview();
             historyReview.setReviewer(reviewer);
             historyReview.setBranchName(taskBranch);
             historyReview.setMergeRequestIid(mergeRequest.getIid());

@@ -1,5 +1,6 @@
 package com.example.assigneeauto.service;
 
+import com.example.assigneeauto.persistance.domain.Reviewer;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
@@ -37,8 +38,8 @@ public interface GitlabApiService {
     /**
      * Назначить ревьювера на merge request
      * @param mergeRequestIid Идентификатор merge request
-     * @param memberId Идентификатор назначаемого участника проекта
+     * @param reviewer Назначаемый участник проекта
      * @return Обновленный merge request
      */
-    MergeRequest setAssigneeToMergeRequest(Long mergeRequestIid, Long memberId) throws GitLabApiException;
+    boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException;
 }
