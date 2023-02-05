@@ -1,6 +1,7 @@
 slack env https://slack.dev/java-slack-sdk/guides/getting-started-with-bolt
 
-Для Подключения Slack и приложения:
+Для подключения Slack и приложения:
+--
 
 - устанавливаем `SLACK_SIGNING_SECRET` (Настройки приложения -> Basic Information
    -> App Credentials -> Signing Secret)
@@ -11,3 +12,8 @@ slack env https://slack.dev/java-slack-sdk/guides/getting-started-with-bolt
 - Настройки приложения -> Slash Commands. Добавляем весь список команд (список будет позднее). 
 Для каждой команды необходимо указать url, сервера, куда будет стучаться Slack, формата `https://{your_domain}/slack/events`
 - Настройки приложения -> Interactivity & Shortcuts. Включить, если выключено, вписать `Request URL` формата `https://{your_domain}/slack/events`
+
+Настройка вебхуков GitLab
+--
+В настройках проекта на вкладке webhooks необходимо добавить url сервиса в формате <url>/gitlab/event/merge-request и 
+поставить триггер на `Merge request`
