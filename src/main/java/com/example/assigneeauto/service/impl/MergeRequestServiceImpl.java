@@ -8,17 +8,17 @@ import com.example.assigneeauto.repository.HistoryReviewRepository;
 import com.example.assigneeauto.service.GitlabApiService;
 import com.example.assigneeauto.service.MergeRequestService;
 import com.example.assigneeauto.service.ReviewerService;
+import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class MergeRequestServiceImpl implements MergeRequestService {
 
     private final GitlabApiService gitlabApiService;
@@ -38,15 +38,12 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     public MergeRequest setAssignee(Long mergeRequestIid, Long assigneeId) {
 
         try {
-            List<Member> projectMembers = gitlabApiService.getListMembers();
+            var projectMembers = gitlabApiService.getListMembers();
             if (projectMembers.stream().noneMatch(member -> Objects.equals(member.getId(), assigneeId))) {
                 throw new AutoAssigneeException("Участник c id '%s' не найден в проекте", assigneeId.toString());
             }
 
-            MergeRequest mergeRequest = getMergeRequestGitLab(mergeRequestIid);
-            gitlabApiService.setAssigneeToMergeRequest(mergeRequestIid, assigneeId);
-
-            return mergeRequest;
+            return gitlabApiService.setAssigneeToMergeRequest(mergeRequestIid, assigneeId);
 
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());
@@ -58,14 +55,15 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     public MergeRequest setAutoAssignee(MergeRequest mergeRequest) {
 
         try {
-            Reviewer reviewer = fullChooseAssignee.getAssignee(mergeRequest);
-            gitlabApiService.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer.getMemberId());
+            var reviewer = fullChooseAssignee.getAssignee(mergeRequest);
+            mergeRequest = gitlabApiService.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer.getMemberId());
             updateReviewer(reviewer, mergeRequest);
 
             return mergeRequest;
 
         } catch (GitLabApiException e) {
-            throw new AutoAssigneeException(e.getMessage());
+            log.warn(e.getMessage());
+            return null;
         }
     }
 
@@ -88,7 +86,7 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     @Override
     public MergeRequest getMergeRequestGitLab(Long mergeRequestIid) {
 
-        MergeRequest mergeRequest = gitlabApiService.getMergeRequest(mergeRequestIid)
+        var mergeRequest = gitlabApiService.getMergeRequest(mergeRequestIid)
                 .orElseThrow(() -> new AutoAssigneeException("Merge request c id '%s' не найден в проекте",
                         mergeRequestIid.toString()));
         if (!mergeRequest.getState().equals(Constants.MergeRequestState.OPENED.toValue())) {
@@ -99,7 +97,7 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     }
 
     private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest) {
-        String taskBranch = mergeRequest.getSourceBranch();
+        var taskBranch = mergeRequest.getSourceBranch();
         // TODO: 04.02.2023 Сделать проверку по Iid
         if (!historyReviewRepository.existsByBranchNameAndReviewer_Id(taskBranch, reviewer.getId())) {
             HistoryReview historyReview = new HistoryReview();

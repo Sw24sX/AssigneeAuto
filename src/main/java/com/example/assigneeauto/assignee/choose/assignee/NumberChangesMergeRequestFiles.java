@@ -68,6 +68,7 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
             int result = 0;
 
             for (DiffEntry diff : gitService.getDiffBranches(newBranchName)) {
+                // TODO: 05.02.2023 blame result по какой то причине может быть null
                 BlameResult blameResult = gitService.getBlameFile(diff.getNewPath());
                 for(int i = 0; i < blameResult.getResultContents().size(); i++) {
                     PersonIdent ident = blameResult.getSourceAuthor(i);

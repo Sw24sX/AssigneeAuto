@@ -20,19 +20,6 @@ public interface GitlabApiService {
     List<Member> getListMembers() throws GitLabApiException;
 
     /**
-     * Список открытых merge request проекта
-     * @return Список merge request проекта
-     */
-    List<MergeRequest> getListMergeRequest() throws GitLabApiException;
-
-    /**
-     * Список merge request проекта по статусу
-     * @param status статус merge request
-     * @return список подходящих merge request
-     */
-    List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException;
-
-    /**
      * Список merge request проекта по id ревьювера
      * @param assigneeId id ревьювера
      * @param status статус возвращаемых merge request
