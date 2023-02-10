@@ -39,7 +39,13 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation 'org.springframework.security:spring-security-test',
+            'org.mockito:mockito-junit-jupiter',
+            "com.tngtech.archunit:archunit-junit5:0.23.1",
+            'org.springframework.integration:spring-integration-test-support',
+            'org.springframework.integration:spring-integration-test',
+            'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
