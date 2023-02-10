@@ -38,6 +38,9 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${postgres.username}
     url: jdbc:postgresql://${postgres.host}:${postgres.port:5432}/${postgres.db-name:dr}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   banner:
     location: banner.txt
 

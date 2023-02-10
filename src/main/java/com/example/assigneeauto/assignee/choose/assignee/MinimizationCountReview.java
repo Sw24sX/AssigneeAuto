@@ -49,9 +49,9 @@ public class MinimizationCountReview extends PartChooseAssignee {
         private static final String CACHE_KEY = "MinimizationCountReview";
 
         @Override
-        public Integer getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
+        public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             try {
-                return gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(),
+                return (long) gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(),
                         Constants.MergeRequestState.OPENED).size();
             } catch (GitLabApiException e) {
                 throw new AutoAssigneeException(e.getMessage());

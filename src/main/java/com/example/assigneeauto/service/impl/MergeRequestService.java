@@ -65,6 +65,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
 
     @Override
     public boolean setAutoAssigneeOrIgnore(Long mergeRequestIid) {
+        log.info("Start process merge request with iid {}", mergeRequestIid);
         var historyReview = historyReviewRepository.findByMergeRequestIid(mergeRequestIid);
         if (historyReview != null) {
             log.warn("Merge request {} was ignored, because it exist in history_review table with id {}",

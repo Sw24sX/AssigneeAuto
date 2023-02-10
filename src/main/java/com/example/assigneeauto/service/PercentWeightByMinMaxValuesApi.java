@@ -15,13 +15,4 @@ public interface PercentWeightByMinMaxValuesApi {
      * @return вес ревьювера
      */
     Integer getCorrectWeight(PercentWeightByMinMaxSettings settings);
-
-    /**
-     * Рассчитывает вес ревьювера по переданной реализации
-     * @param weightByNotValuesApi Реализация рассчета веса для каждого ревьювера
-     * @param reviewer ревьвер, для которого необходимо вычислить значение
-     * @param mergeRequest обрабатываемый merge request
-     * @return вес ревьювера
-     */
-    Integer getWeightValueByReviewer(WeightByNotValuesApi weightByNotValuesApi, Reviewer reviewer, MergeRequest mergeRequest);
 }

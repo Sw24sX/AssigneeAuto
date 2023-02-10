@@ -5,6 +5,7 @@ import org.gitlab4j.api.models.AccessLevel;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "reviewer")
@@ -32,4 +33,8 @@ public class Reviewer extends BaseEntity {
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<HistoryReview> historyReviews;
+
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.EAGER)
+    @ToString.Include
+    private Set<ReviewerName> reviewerNames;
 }

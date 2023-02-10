@@ -22,7 +22,7 @@ public class CacheConfig {
         return new ConcurrentMapCacheManager();
     }
 
-    @Bean("percentWeightKeyGenerator")
+//    @Bean("percentWeightKeyGenerator")
     public KeyGenerator keyGenerator() {
         return new PercentWeightKeyGenerator();
     }

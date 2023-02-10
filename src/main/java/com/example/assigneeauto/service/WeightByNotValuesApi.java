@@ -8,7 +8,7 @@ import org.gitlab4j.api.models.MergeRequest;
  * Используется для получения минимального и максимального значений и рассчета веса ревьювера на основе этого
  */
 public interface WeightByNotValuesApi {
-    Integer getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest);
+    Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest);
 
     String getCacheKey();
 }
