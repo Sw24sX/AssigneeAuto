@@ -21,31 +21,35 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-web-services'
-    implementation 'org.liquibase:liquibase-core'
-    implementation 'org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r'
-    implementation 'org.gitlab4j:gitlab4j-api:5.0.1'
-    implementation 'com.slack.api:bolt:1.27.3'
-    implementation 'com.slack.api:bolt-servlet:1.27.3'
-    implementation 'com.slack.api:bolt-socket-mode:1.27.3'
-    implementation 'org.glassfish.tyrus.bundles:tyrus-standalone-client:2.1.2'
-    implementation 'me.ramswaroop.jbot:jbot:4.1.2-rc.2'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    compileOnly 'javax.websocket:javax.websocket-api:1.1'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation  'org.springframework.boot:spring-boot-starter-data-jpa',
+                    'org.springframework.boot:spring-boot-starter-web',
+                    'org.springframework.boot:spring-boot-starter-web-services',
+                    'org.liquibase:liquibase-core',
+                    'org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r',
+                    'org.gitlab4j:gitlab4j-api:5.0.1',
+                    'com.slack.api:bolt:1.27.3',
+                    'com.slack.api:bolt-servlet:1.27.3',
+                    'com.slack.api:bolt-socket-mode:1.27.3',
+                    'org.glassfish.tyrus.bundles:tyrus-standalone-client:2.1.2',
+                    'me.ramswaroop.jbot:jbot:4.1.2-rc.2',
+                    'org.springframework.boot:spring-boot-starter-data-redis'
 
-    testImplementation 'org.springframework.security:spring-security-test',
-            'org.mockito:mockito-junit-jupiter',
-            "com.tngtech.archunit:archunit-junit5:0.23.1",
-            'org.springframework.integration:spring-integration-test-support',
-            'org.springframework.integration:spring-integration-test',
-            'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'javax.websocket:javax.websocket-api:1.1',
+                'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    annotationProcessor 'org.projectlombok:lombok',
+                        "org.springframework.boot:spring-boot-configuration-processor"
+
+    testImplementation  'org.springframework.security:spring-security-test',
+                        'org.mockito:mockito-junit-jupiter',
+                        "com.tngtech.archunit:archunit-junit5:0.23.1",
+                        'org.springframework.integration:spring-integration-test-support',
+                        'org.springframework.integration:spring-integration-test',
+                        'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
