@@ -51,12 +51,4 @@ public interface ReviewerServiceApi {
      * @return сохраненный ревьювер
      */
     Reviewer updateReviewer(Reviewer reviewer);
-
-    /**
-     * Определяет, является ли ревьювер носителем переданного имени из git репозитория
-     * @param reviewer проверяемый ревьювер
-     * @param name проверяемое имя
-     * @return результат проверки
-     */
-    boolean isReviewerGitName(Reviewer reviewer, String name);
 }

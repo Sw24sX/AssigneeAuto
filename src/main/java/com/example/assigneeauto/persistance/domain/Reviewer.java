@@ -27,9 +27,6 @@ public class Reviewer extends BaseEntity {
     @Column(name = "review_access")
     private boolean isReviewAccess;
 
-    @Column(name = "git_username")
-    private String gitUsername;
-
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<HistoryReview> historyReviews;

@@ -1,6 +1,7 @@
 package com.example.assigneeauto.service.impl;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
+import com.example.assigneeauto.persistance.domain.ReviewerName;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.repository.ReviewerRepository;
 import com.example.assigneeauto.service.GitlabServiceApi;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,8 +38,9 @@ public class ReviewerService implements ReviewerServiceApi {
     }
 
     @Override
+    @Transactional
     public Reviewer addNewReviewer(String username, String gitUsername) throws GitLabApiException {
-        Reviewer reviewer = reviewerRepository.findByUsernameOrGitUsername(username, gitUsername)
+        Reviewer reviewer = reviewerRepository.findByUsername(username)
                 .orElse(createReviewer(username, gitUsername));
         if (!reviewer.isReviewAccess()) {
             reviewer.setReviewAccess(true);
@@ -46,17 +49,19 @@ public class ReviewerService implements ReviewerServiceApi {
     }
 
     private Reviewer createReviewer(String username, String gitUsername) throws GitLabApiException {
-        Member member = gitlabServiceApi.getListMembers().stream()
+        var member = gitlabServiceApi.getListMembers().stream()
                 .filter(x -> x.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(() -> new AutoAssigneeException("Участник '%s' не найден в проекте", username));
 
-        Reviewer reviewer = new Reviewer();
+        var reviewer = new Reviewer();
         reviewer.setReviewAccess(true);
         reviewer.setUsername(member.getUsername());
         reviewer.setMemberId(member.getId());
         reviewer.setAccessLevelGitLab(member.getAccessLevel());
-        reviewer.setGitUsername(gitUsername);
+        var reviewerName = new ReviewerName();
+        reviewerName.setReviewer(reviewer);
+        reviewerName.setGitName(gitUsername);
         return reviewerRepository.save(reviewer);
     }
 
@@ -71,11 +76,5 @@ public class ReviewerService implements ReviewerServiceApi {
     @Override
     public Reviewer updateReviewer(Reviewer reviewer) {
         return reviewerRepository.save(reviewer);
-    }
-
-    @Override
-    public boolean isReviewerGitName(Reviewer reviewer, String name) {
-        // TODO: 16.10.2022 Добавить поддержку нескольких имен в git для каждого ревьвера
-        return reviewer.getGitUsername().equals(name);
     }
 }
