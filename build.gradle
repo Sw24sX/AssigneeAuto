@@ -34,7 +34,8 @@ dependencies {
                     'me.ramswaroop.jbot:jbot:4.1.2-rc.2',
                     'org.springframework.boot:spring-boot-starter-data-redis',
                     'org.springframework.boot:spring-boot-starter-thymeleaf',
-                    'org.webjars:bootstrap:5.2.3'
+                    'org.webjars:bootstrap:5.2.3',
+                    'org.mapstruct:mapstruct:1.5.3.Final'
 
     compileOnly 'javax.websocket:javax.websocket-api:1.1',
                 'org.projectlombok:lombok'
@@ -44,7 +45,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     annotationProcessor 'org.projectlombok:lombok',
-                        "org.springframework.boot:spring-boot-configuration-processor"
+                        'org.springframework.boot:spring-boot-configuration-processor',
+                        'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     testImplementation  'org.springframework.security:spring-security-test',
                         'org.mockito:mockito-junit-jupiter',
