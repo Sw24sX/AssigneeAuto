@@ -51,10 +51,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
         try {
             var reviewer = fullChooseAssignee.getAssignee(mergeRequest);
             var result = gitlabServiceApi.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer);
-            if (result) {
-                updateReviewer(reviewer, mergeRequest);
-            }
-
+            updateReviewer(reviewer, mergeRequest, result);
             return result;
 
         } catch (GitLabApiException e) {
@@ -95,17 +92,19 @@ public class MergeRequestService implements MergeRequestServiceApi {
         return mergeRequest;
     }
 
-    private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest) {
+    private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest, boolean result) {
         var taskBranch = mergeRequest.getSourceBranch();
         if (!historyReviewRepository.existsByMergeRequestIid(mergeRequest.getIid())) {
             var historyReview = new HistoryReview();
             historyReview.setReviewer(reviewer);
             historyReview.setBranchName(taskBranch);
             historyReview.setMergeRequestIid(mergeRequest.getIid());
+            historyReview.setMergeRequestName(mergeRequest.getTitle());
+            historyReview.setSuccess(result);
             historyReview = historyReviewRepository.save(historyReview);
-            reviewer.getHistoryReviews().add(historyReview);
+//            reviewer.getHistoryReviews().add(historyReview);
         }
 
-        reviewerServiceApi.updateReviewer(reviewer);
+//        reviewerServiceApi.saveReviewer(reviewer);
     }
 }

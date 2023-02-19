@@ -39,7 +39,7 @@ public interface GitlabServiceApi {
      * Назначить ревьювера на merge request
      * @param mergeRequestIid Идентификатор merge request
      * @param reviewer Назначаемый участник проекта
-     * @return Обновленный merge request
+     * @return Успешность назначения ревьювера (true - успех)
      */
     boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException;
 }
