@@ -35,7 +35,9 @@ dependencies {
                     'org.springframework.boot:spring-boot-starter-data-redis',
                     'org.springframework.boot:spring-boot-starter-thymeleaf',
                     'org.webjars:bootstrap:5.2.3',
-                    'org.mapstruct:mapstruct:1.5.3.Final'
+                    'org.mapstruct:mapstruct:1.5.3.Final',
+                    'com.google.guava:guava:31.1-jre'
+
 
     compileOnly 'javax.websocket:javax.websocket-api:1.1',
                 'org.projectlombok:lombok'

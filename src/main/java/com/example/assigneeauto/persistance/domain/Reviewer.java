@@ -5,10 +5,9 @@ import org.gitlab4j.api.models.AccessLevel;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "reviewer")
 @Getter
 @Setter
 @ToString
@@ -21,17 +20,16 @@ public class Reviewer extends BaseEntity {
 
     private String username;
 
-    @Column(name = "member_id")
     private Long memberId;
 
     @Column(name = "review_access")
     private boolean isReviewAccess;
 
-    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<HistoryReview> historyReviews;
 
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.EAGER)
     @ToString.Include
-    private Set<ReviewerName> reviewerNames;
+    private List<ReviewerName> reviewerNames;
 }

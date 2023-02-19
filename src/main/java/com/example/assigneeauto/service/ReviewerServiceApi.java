@@ -33,22 +33,20 @@ public interface ReviewerServiceApi {
      * Дополнительно идет запрос в GitLab с проверкой, что пользователь добавлен к проекту
      * Если пользователь не добавлен к проекту его нельзя назначить ревьювером
      * @param username имя пользователя в GitLab нового ревьювера
-     * @param gitUsername имя пользователя в git'е
      * @return Новый ревьювер
      */
-    Reviewer addNewReviewer(String username, String gitUsername) throws GitLabApiException;
-
-    /**
-     * Снять доступ к ревью для указанного пользователя
-     * @param username имя пользователя в GitLab
-     * @return Измененный ревьювер
-     */
-    Reviewer deleteAccessReviewer(String username);
+    Reviewer addNewReviewer(String username) throws GitLabApiException;
 
     /**
      * Обновить данные по ревьюверу
      * @param reviewer обновленный объект ревьювера
      * @return сохраненный ревьювер
      */
-    Reviewer updateReviewer(Reviewer reviewer);
+    Reviewer saveReviewer(Reviewer reviewer);
+
+    /**
+     * Удалить ревьювера
+     * @param id Идентификатор ревьювера
+     */
+    void deleteReviewer(Long id);
 }

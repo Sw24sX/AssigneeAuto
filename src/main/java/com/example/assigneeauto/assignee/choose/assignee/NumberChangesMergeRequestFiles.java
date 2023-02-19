@@ -33,17 +33,15 @@ import java.util.Map;
 public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
 
     private final GitServiceApi gitServiceApi;
-    private final ReviewerServiceApi reviewerServiceApi;
     private final PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi;
     private final NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository;
 
     protected NumberChangesMergeRequestFiles(NumberChangesMergeRequestFilesProperties properties,
-                                             GitServiceApi gitServiceApi, ReviewerServiceApi reviewerServiceApi,
+                                             GitServiceApi gitServiceApi,
                                              PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi,
                                              NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository) {
         super(properties);
         this.gitServiceApi = gitServiceApi;
-        this.reviewerServiceApi = reviewerServiceApi;
         this.percentWeightByMinMaxValuesApi = percentWeightByMinMaxValuesApi;
         this.numberChangesMergeRequestCacheRepository = numberChangesMergeRequestCacheRepository;
     }
@@ -75,7 +73,9 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
         public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             var rowCount = calculateRowNumbersByReviewers(mergeRequest);
             return rowCount.entrySet().stream()
-                    .filter(e -> reviewer.getReviewerNames().contains(e.getKey()))
+                    .filter(e -> reviewer.getReviewerNames()
+                            .stream()
+                            .anyMatch(name -> name.getGitName().equals(e.getKey())))
                     .mapToLong(Map.Entry::getValue)
                     .sum();
         }

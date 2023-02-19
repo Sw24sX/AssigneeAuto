@@ -11,7 +11,13 @@ import javax.persistence.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"gitName"}, callSuper = false)
 public class ReviewerName extends BaseEntity {
+
+    public ReviewerName(String gitName) {
+        this.gitName = gitName;
+    }
+
     private String gitName;
 
     @ManyToOne(fetch = FetchType.EAGER)
