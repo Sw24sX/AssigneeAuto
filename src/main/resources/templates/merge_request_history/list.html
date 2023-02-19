@@ -42,8 +42,40 @@
             </tr>
             </tbody>
         </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" th:if="${currentPage > 1}">
+                    <a class="page-link" href="#" aria-label="Previous"
+                       th:href="@{/history(size=${pageHistory.size}, page=${currentPage - 1})}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:unless="${currentPage > 1}">
+                    <a class="page-link disabled" href="#" aria-label="Previous" aria-disabled="true">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link" href="#" th:text="${pageNumber}"
+                       th:href="@{/history(size=${pageHistory.size}, page=${pageNumber})}"></a>
+                </li>
+                <li class="page-item" th:if="${currentPage < pageHistory.totalPages}">
+                    <a class="page-link" href="#" aria-label="Next"
+                       th:href="@{/history(size=${pageHistory.size}, page=${currentPage + 1})}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:unless="${currentPage < pageHistory.totalPages}">
+                    <a class="page-link" href="#" aria-label="Next" aria-disabled="true">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
+
 <div th:insert="common/load_faster"></div>
 </body>
 </html>
