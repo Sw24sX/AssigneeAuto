@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>О сервисе</title>
+  <link href="/static/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+</head>
+
+<body>
+
+<div th:insert="common/navbar"></div>
+
+<div class="container">
+  <div class="h-100 p-5 bg-light border rounded-3">
+    <h3 >О сервисе</h3>
+
+    <p>
+      Сервис нацелен на автоматическое распределение задач между ревьюверами.
+      Он помогает сократить время, затрачиваемое на оценку работы, и повышает эффективность работы команды.
+    </p>
+    <p>
+      Реализовал сервис: Королёв Александр
+    </p>
+    <p>
+      Исходный код сервиса можно найти на <a href="https://github.com/Sw24sX/AssigneeAuto">GitHub</a>
+    </p>
+  </div>
+</div>
+
+<div th:insert="common/load_faster"></div>
+</body>
+</html>
