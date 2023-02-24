@@ -1,18 +1,12 @@
 package com.example.assigneeauto.controller.web;
 
-import com.example.assigneeauto.persistance.domain.Reviewer;
-import com.example.assigneeauto.persistance.domain.ReviewerName;
+import com.example.assigneeauto.persistance.dto.web.ReviewerDto;
 import com.example.assigneeauto.persistance.mapper.ReviewerMapper;
 import com.example.assigneeauto.service.ReviewerServiceApi;
 import lombok.RequiredArgsConstructor;
-import org.gitlab4j.api.GitLabApiException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.ArrayList;
 
 @Controller
 @RequestMapping("reviewer")
@@ -29,62 +23,46 @@ public class ReviewerController {
         return result;
     }
 
-    @GetMapping("{id}")
-    public ModelAndView getById(@PathVariable("id") Long id) {
-        var reviewer = reviewerServiceApi.getById(id);
-//        var dto = reviewerMapper.from(reviewer);
+    @PostMapping(value = "edit", params={"change"})
+    public ModelAndView getById(@RequestParam(name = "change") Long id) {
+        var dto = reviewerMapper.from(reviewerServiceApi.getById(id));
         var result = new ModelAndView("reviewers/edit");
-        result.addObject("reviewer", reviewer);
+        result.addObject("reviewer", dto);
         return result;
     }
 
-    @GetMapping("{id}/delete")
-    public String deleteReviewer(@PathVariable Long id) {
+    @PostMapping(value = "edit", params={"delete"})
+    public String deleteReviewer(@RequestParam(name = "delete") Long id) {
         reviewerServiceApi.deleteReviewer(id);
         return "redirect:/reviewer/list";
     }
 
     @GetMapping("new")
     public ModelAndView createNew() {
+        var reviewer = reviewerServiceApi.initReviewer();
         var result = new ModelAndView("reviewers/edit");
-        result.addObject("reviewer", new Reviewer());
+        result.addObject("reviewer", reviewerMapper.from(reviewer));
         return result;
     }
 
     @PostMapping(value = "edit", params={"save"})
-    public String save(@ModelAttribute Reviewer reviewer) throws GitLabApiException {
-        var updatedReviewer = reviewer;
-        if (reviewer.getId() == null) {
-            updatedReviewer = reviewerServiceApi.addNewReviewer(reviewer.getUsername());
-            reviewerMapper.updateReviewer(reviewer, updatedReviewer);
-        }
-        reviewerServiceApi.saveReviewer(updatedReviewer);
+    public String save(@ModelAttribute ReviewerDto reviewer) {
+        reviewerServiceApi.updateReviewer(reviewerMapper.to(reviewer));
         //todo: проверка на ошибки + сохранение списка имен + обработка exceptions
         return "redirect:/reviewer/list";
     }
 
     @PostMapping(value = "edit", params={"addRow"})
-    public ModelAndView addRow(Reviewer reviewer) {
-        var newName = new ReviewerName();
-        newName.setReviewer(reviewer);
-        if (reviewer.getReviewerNames() == null) {
-            reviewer.setReviewerNames(new ArrayList<>());
-        }
-        reviewer.getReviewerNames().add(newName);
-
+    public ModelAndView addRow(ReviewerDto reviewer) {
+        reviewer.getReviewerNames().add("");
         var result = new ModelAndView("reviewers/edit");
         result.addObject("reviewer", reviewer);
         return result;
     }
 
     @PostMapping(value = "edit", params={"removeRow"})
-    public ModelAndView removeRow(Reviewer reviewer) {
-        var removeRow = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest()
-                .getParameter("removeRow");
-        var rowId = Integer.parseInt(removeRow);
+    public ModelAndView removeRow(ReviewerDto reviewer, @RequestParam(name = "removeRow") int rowId) {
         reviewer.getReviewerNames().remove(rowId);
-
         var result = new ModelAndView("reviewers/edit");
         result.addObject("reviewer", reviewer);
         return result;

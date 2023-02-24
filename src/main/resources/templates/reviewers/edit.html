@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <title>Создание/Редактирвоание ревьювера</title>
+    <title th:if="${reviewer.id}">Редактирование ревьювера</title>
+    <title th:unless="${reviewer.id}">Создание ревьювера</title>
     <link href="/static/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
 </head>
 
@@ -15,13 +16,14 @@
 
 <div class="container">
     <div class="h-100 p-5 bg-light border rounded-3">
-        <h3 >Создание/Редактирвоание ревьювера</h3>
-
+        <h3 th:if="${reviewer.id}">Редактирование ревьювера</h3>
+        <h3 th:unless="${reviewer.id}">Создание ревьювера</h3>
         <form action="#" th:action="@{/reviewer/edit}" th:object="${reviewer}" method="post">
             <input class="d-none" type="number" th:field="*{id}"/>
             <div class="form-group">
-                <label for="username">Имя пользователя (GitLab)</label>
-                <input class="form-control" type="text" th:field="*{username}" id="username"/>
+                <label>Имя пользователя (GitLab)</label>
+                <span th:if="${reviewer.id}" class="font-weight-bold" th:text="*{username}"/>
+                <input th:unless="${reviewer.id}" class="form-control" type="text" th:field="*{username}"/>
             </div>
             <div class="form-group">
                 <label>Имена пользователя (git)</label>
@@ -29,7 +31,7 @@
                     <tbody>
                     <tr th:each="name, stat : ${reviewer.reviewerNames}">
                         <td class="w-75">
-                            <input class="w-100" th:field="*{reviewerNames[__${stat.index}__].gitName}"/>
+                            <input class="w-100" th:field="*{reviewerNames[__${stat.index}__]}"/>
                         </td>
                         <td>
                             <button type="submit" name="removeRow" class="btn btn-outline-danger" th:value="${stat.index}">

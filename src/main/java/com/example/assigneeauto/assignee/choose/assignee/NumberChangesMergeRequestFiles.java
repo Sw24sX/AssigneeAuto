@@ -8,7 +8,6 @@ import com.example.assigneeauto.persistance.properties.choose.assignee.propertie
 import com.example.assigneeauto.repository.cache.NumberChangesMergeRequestCacheRepository;
 import com.example.assigneeauto.service.GitServiceApi;
 import com.example.assigneeauto.service.PercentWeightByMinMaxValuesApi;
-import com.example.assigneeauto.service.ReviewerServiceApi;
 import com.example.assigneeauto.service.WeightByNotValuesApi;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.blame.BlameResult;
@@ -73,9 +72,7 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
         public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             var rowCount = calculateRowNumbersByReviewers(mergeRequest);
             return rowCount.entrySet().stream()
-                    .filter(e -> reviewer.getReviewerNames()
-                            .stream()
-                            .anyMatch(name -> name.getGitName().equals(e.getKey())))
+                    .filter(e -> reviewer.getReviewerNames().contains(e.getKey()))
                     .mapToLong(Map.Entry::getValue)
                     .sum();
         }
