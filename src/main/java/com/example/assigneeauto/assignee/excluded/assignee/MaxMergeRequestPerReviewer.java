@@ -21,13 +21,11 @@ import java.util.List;
 public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
 
     private final GitlabServiceApi gitlabServiceApi;
-    private final MaxMergeRequestPerReviewerProperties properties;
 
     public MaxMergeRequestPerReviewer(GitlabServiceApi gitlabServiceApi,
                                       MaxMergeRequestPerReviewerProperties properties) {
         super(properties);
         this.gitlabServiceApi = gitlabServiceApi;
-        this.properties = properties;
     }
 
     @Override
@@ -37,7 +35,7 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
             List<MergeRequest> mergeRequests = gitlabServiceApi
                     .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
 
-            return mergeRequests.size() >= properties.getMaxMergeRequests();
+            return mergeRequests.size() >= reviewer.getInfo().getMaxCountReview();
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());
         }

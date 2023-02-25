@@ -1,6 +1,7 @@
 package com.example.assigneeauto.service.impl;
 
 import com.example.assigneeauto.persistance.domain.Reviewer;
+import com.example.assigneeauto.persistance.domain.ReviewerInfo;
 import com.example.assigneeauto.persistance.mapper.ReviewerMapper;
 import com.example.assigneeauto.repository.ReviewerRepository;
 import com.example.assigneeauto.service.GitlabServiceApi;
@@ -58,10 +59,6 @@ public class ReviewerService implements ReviewerServiceApi {
             return errors;
         }
         reviewerMapper.updateReviewer(updated, reviewer);
-        var errors = validateReviewer(reviewer);
-        if (!errors.isEmpty()) {
-            return errors;
-        }
         reviewerRepository.save(reviewer);
         return new HashMap<>();
     }
@@ -69,7 +66,10 @@ public class ReviewerService implements ReviewerServiceApi {
     @SneakyThrows
     @Override
     public Map<String, String> createReviewer(Reviewer created) {
+        var info = new ReviewerInfo();
         var reviewer = new Reviewer();
+        info.setReviewer(reviewer);
+        reviewer.setInfo(info);
         reviewer.setReviewAccess(true);
         reviewerMapper.updateReviewer(created, reviewer);
 
@@ -79,10 +79,7 @@ public class ReviewerService implements ReviewerServiceApi {
         }
 
         var member = gitlabServiceApi.getMember(created.getUsername());
-        //TODO: to mapper
-        reviewer.setUsername(member.getUsername());
-        reviewer.setMemberId(member.getId());
-        reviewer.setAccessLevelGitLab(member.getAccessLevel());
+        reviewerMapper.updateReviewer(member, reviewer);
         reviewerRepository.save(reviewer);
         return errors;
     }
@@ -108,6 +105,7 @@ public class ReviewerService implements ReviewerServiceApi {
         var result = new Reviewer();
         result.setReviewAccess(true);
         result.setReviewerNames(List.of(""));
+        result.setInfo(new ReviewerInfo(1, result));
         return result;
     }
 }

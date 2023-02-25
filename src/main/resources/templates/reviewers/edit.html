@@ -59,11 +59,17 @@
                     </tr>
                     </tbody>
                 </table>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="review_access" th:field="*{reviewAccess}">
+                    <label class="form-check-label" for="review_access">Разрешить назначение</label>
+                </div>
+                <h4>Дополнительная информация</h4>
+                <div class="form-group">
+                    <label>Максимальное количество единовременных ревью</label>
+                    <input class="form-control" type="number" th:field="*{maxCountReview}"/>
+                </div>
             </div>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="review_access" th:field="*{reviewAccess}">
-                <label class="form-check-label" for="review_access">Разрешить назначение</label>
-            </div>
+
             <button type="submit" name="save" class="btn btn-primary">Сохранить</button>
         </form>
     </div>

@@ -32,4 +32,7 @@ public class Reviewer extends BaseEntity {
     @CollectionTable(name = "reviewer_name", joinColumns = @JoinColumn(name = "reviewer_id"))
     @Column(name = "git_name")
     private List<String> reviewerNames;
+
+    @OneToOne(mappedBy = "reviewer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private ReviewerInfo info;
 }

@@ -11,4 +11,6 @@ public class ReviewerDto {
     private String username;
     private List<String> reviewerNames = new ArrayList<>();
     private boolean isReviewAccess;
+
+    private Integer maxCountReview;
 }

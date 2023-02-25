@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="2023-02-25-16-30" author="KorolyovAS">
+        <createTable tableName="reviewer_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="reviewer_info_id_pk" />
+            </column>
+            <column name="reviewer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_count_review" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint  baseColumnNames="reviewer_id"
+                                  baseTableName="reviewer_info"
+                                  constraintName="reviewer_info_reviewer_id_fk"
+                                  deferrable="true"
+                                  initiallyDeferred="true"
+                                  onDelete="CASCADE"
+                                  onUpdate="RESTRICT"
+                                  referencedColumnNames="id"
+                                  referencedTableName="reviewer"
+                                  validate="true"/>
+    </changeSet>
+</databaseChangeLog>
