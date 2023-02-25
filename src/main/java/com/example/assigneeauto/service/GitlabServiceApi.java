@@ -21,6 +21,13 @@ public interface GitlabServiceApi {
     List<Member> getListMembers() throws GitLabApiException;
 
     /**
+     * Получить участника проекта по его имени пользователя
+     * @param username имя пользователя искомого участника
+     * @return искомый участник или null
+     */
+    Member getMember(String username) throws GitLabApiException;
+
+    /**
      * Список merge request проекта по id ревьювера
      * @param assigneeId id ревьювера
      * @param status статус возвращаемых merge request

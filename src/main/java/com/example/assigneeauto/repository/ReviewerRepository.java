@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewerRepository extends JpaRepository<Reviewer, Long> {
-    Optional<Reviewer> findByUsername(String username);
     @Query("select r from Reviewer r where r.isReviewAccess = :reviewAccess")
     List<Reviewer> findAllByReviewAccess(boolean reviewAccess);
+
+    boolean existsByUsername(String username);
 }

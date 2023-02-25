@@ -8,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.*;
+import org.gitlab4j.api.models.Member;
+import org.gitlab4j.api.models.MergeRequest;
+import org.gitlab4j.api.models.MergeRequestFilter;
+import org.gitlab4j.api.models.MergeRequestParams;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +33,14 @@ public class GitlabService implements GitlabServiceApi {
     @Cacheable(value = "members")
     public List<Member> getListMembers() throws GitLabApiException {
         return gitLabApi.getProjectApi().getMembers(gitlabApiProperties.getProjectId());
+    }
+
+    @Override
+    public Member getMember(String username) throws GitLabApiException {
+        return getListMembers().stream()
+                .filter(x -> x.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

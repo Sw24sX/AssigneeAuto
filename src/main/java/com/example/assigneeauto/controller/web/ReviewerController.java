@@ -46,10 +46,18 @@ public class ReviewerController {
     }
 
     @PostMapping(value = "edit", params={"save"})
-    public String save(@ModelAttribute ReviewerDto reviewer) {
-        reviewerServiceApi.updateReviewer(reviewerMapper.to(reviewer));
-        //todo: проверка на ошибки + сохранение списка имен + обработка exceptions
-        return "redirect:/reviewer/list";
+    public ModelAndView save(@ModelAttribute ReviewerDto reviewer) {
+        var errors = reviewer.getId() == null ?
+                reviewerServiceApi.createReviewer(reviewerMapper.to(reviewer)) :
+                reviewerServiceApi.updateReviewer(reviewerMapper.to(reviewer));
+        if (!errors.isEmpty()) {
+            var result = new ModelAndView("reviewers/edit");
+            result.addObject("reviewer", reviewer);
+            result.addObject("errors", errors);
+            return result;
+        }
+
+        return new ModelAndView("redirect:/reviewer/list");
     }
 
     @PostMapping(value = "edit", params={"addRow"})

@@ -8,7 +8,6 @@ import org.mapstruct.*;
 public interface ReviewerMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "username", ignore = true)
     void updateReviewer(Reviewer source, @MappingTarget Reviewer target);
 
     ReviewerDto from(Reviewer reviewer);

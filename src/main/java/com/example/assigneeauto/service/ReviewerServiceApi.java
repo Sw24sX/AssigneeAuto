@@ -3,6 +3,7 @@ package com.example.assigneeauto.service;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Сервис для управления списокм ревьюверов
@@ -36,9 +37,11 @@ public interface ReviewerServiceApi {
     /**
      * Обновление или создание ревьювера
      * @param updated Новые данные о ревьювере
-     * @return Результат обновления
+     * @return Список ошибок при обновлении
      */
-    Reviewer updateReviewer(Reviewer updated);
+    Map<String, String> updateReviewer(Reviewer updated);
+
+    Map<String, String> createReviewer(Reviewer created);
 
     /**
      * Создает и заполняет начальными данными нового ревьювера

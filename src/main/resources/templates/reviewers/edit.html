@@ -18,6 +18,11 @@
     <div class="h-100 p-5 bg-light border rounded-3">
         <h3 th:if="${reviewer.id}">Редактирование ревьювера</h3>
         <h3 th:unless="${reviewer.id}">Создание ревьювера</h3>
+        <div th:if="errors">
+            <div class="alert alert-danger" role="alert" th:each="error : ${errors}" th:text="${error.value}">
+
+            </div>
+        </div>
         <form action="#" th:action="@{/reviewer/edit}" th:object="${reviewer}" method="post">
             <input class="d-none" type="number" th:field="*{id}"/>
             <div class="form-group">
