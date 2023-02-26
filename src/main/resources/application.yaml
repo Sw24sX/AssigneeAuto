@@ -39,17 +39,17 @@ spring:
     username: ${postgres.username}
     url: jdbc:postgresql://${postgres.host}:${postgres.port:5432}/${postgres.db-name:dr}
   redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+    host: ${redis.host}
+    port: ${redis.port}
   banner:
     location: banner.txt
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+#  jpa:
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
 
-logging:
-  level:
-    org.hibernate.sql: DEBUG
-    org.hibernate.type: TRACE
+#logging:
+#  level:
+#    org.hibernate.sql: DEBUG
+#    org.hibernate.type: TRACE

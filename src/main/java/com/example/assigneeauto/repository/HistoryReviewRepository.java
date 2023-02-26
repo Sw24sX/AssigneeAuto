@@ -7,6 +7,7 @@ public interface HistoryReviewRepository  extends JpaRepository<HistoryReview, L
     boolean existsByBranchNameAndReviewer_Id(String branchName, Long reviewer_id);
 
     boolean existsByBranchName(String branchName);
+    HistoryReview findByBranchName(String branchName);
 
     HistoryReview findByMergeRequestIid(Long mergeRequestIid);
 

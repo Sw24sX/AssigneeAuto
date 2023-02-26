@@ -8,8 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.models.MergeRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
- * Стратегия исключения ревьюверов, если задачу из этой ветки уже проверял один из ревьюверов
+ * Стратегия исключения ревьюверов, если задачу из этой ветки уже проверял один из ревьюверов.
+ * Заключается в исключении всех ревьюверов, кроме проверявшего.
+ * Если проверявший ревьювер приостановлен или удален, то игнорируется
  */
 @Component
 @Slf4j
@@ -28,10 +32,10 @@ public class ReviewerTaskBranch extends PartExcludedAssignee {
     protected boolean getPartValue(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run ReviewerTaskBranch for reviewer {}", reviewer.getUsername());
         String branchName = mergeRequest.getSourceBranch();
-        if (!historyReviewRepository.existsByBranchName(branchName)) {
+        var history = historyReviewRepository.findByBranchName(branchName);
+        if (history == null || !history.getReviewer().isReviewAccess()) {
             return false;
         }
-
-        return !historyReviewRepository.existsByBranchNameAndReviewer_Id(branchName, reviewer.getId());
+        return !Objects.equals(history.getReviewer().getId(), reviewer.getId());
     }
 }
