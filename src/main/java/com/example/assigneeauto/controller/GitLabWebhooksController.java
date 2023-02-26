@@ -1,9 +1,10 @@
 package com.example.assigneeauto.controller;
 
+import com.example.assigneeauto.event.dto.MergeRequestEvent;
 import com.example.assigneeauto.persistance.dto.MergeRequestEventGitLab;
-import com.example.assigneeauto.service.MergeRequestServiceApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("gitlab/event")
 public class GitLabWebhooksController {
 
-    private final MergeRequestServiceApi mergeRequestServiceApi;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @PostMapping("merge-request")
-    public void mergeRequestEvent(@RequestBody MergeRequestEventGitLab event) {
-        var mergeRequestIid = event.getObjectAttributes().getIid();
-        mergeRequestServiceApi.setAutoAssigneeOrIgnore(mergeRequestIid);
+    public void mergeRequestEvent(@RequestBody MergeRequestEventGitLab mergeRequestEventGitLab) {
+        var mergeRequestIid = mergeRequestEventGitLab.getObjectAttributes().getIid();
+        var event = new MergeRequestEvent(this, mergeRequestIid);
+        //Отправляем эвент на асинхронную обработку, т.к. обработка пришедшего запроса может затянуться
+        //из-за чего GitLab может нас заблочить по неуспешно обрабатываемым запросам по времени
+        applicationEventPublisher.publishEvent(event);
     }
 }
