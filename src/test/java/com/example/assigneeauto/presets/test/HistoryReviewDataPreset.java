@@ -7,7 +7,7 @@ public class HistoryReviewDataPreset {
         return HistoryReviewData.builder()
                 .id(1L)
                 .mergeRequestIid(1L)
-                .branchName("test")
+                .branchName(GitBranch.TEST_1.getName())
                 .isSuccess(true)
                 .mergeRequestName("test merge request 1")
                 .build();
@@ -17,7 +17,7 @@ public class HistoryReviewDataPreset {
         return HistoryReviewData.builder()
                 .id(2L)
                 .mergeRequestIid(2L)
-                .branchName("test_2")
+                .branchName(GitBranch.TEST_2.getName())
                 .isSuccess(true)
                 .mergeRequestName("test merge request 2")
                 .build();
@@ -27,7 +27,7 @@ public class HistoryReviewDataPreset {
         return HistoryReviewData.builder()
                 .id(3L)
                 .mergeRequestIid(3L)
-                .branchName("test_1")
+                .branchName(GitBranch.TEST_1.getName())
                 .isSuccess(false)
                 .mergeRequestName("test merge request 1")
                 .build();

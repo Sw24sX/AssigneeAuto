@@ -54,7 +54,7 @@ public class MaxMergeRequestPerReviewerTests {
     }
 
     @Test
-    public void ExcludeReviewerWithFiveMR_Ok() {
+    public void excludeReviewerWithFiveMR() {
         var reviewer = ReviewerPreset.first();
         MergeRequest request = MergeRequestPreset.second();
 
@@ -62,7 +62,7 @@ public class MaxMergeRequestPerReviewerTests {
     }
 
     @Test
-    public void IncludeReviewerWithOneMR_Ok() {
+    public void includeReviewerWithOneMR() {
         var reviewer = ReviewerPreset.second();
         MergeRequest request = MergeRequestPreset.second();
 

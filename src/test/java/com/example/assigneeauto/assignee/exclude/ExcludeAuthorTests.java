@@ -20,7 +20,7 @@ public class ExcludeAuthorTests {
     private ExcludeAuthor excludeAuthor;
 
     @Test
-    public void ExcludeAuthor_Ok() {
+    public void excludeAuthor() {
         var mergeRequest = MergeRequestPreset.first();
         var reviewer = ReviewerPreset.first();
 
@@ -29,7 +29,7 @@ public class ExcludeAuthorTests {
     }
 
     @Test
-    public void IncludeNotAuthor_Ok() {
+    public void includeNotAuthor() {
         MergeRequest mergeRequest = MergeRequestPreset.first();
         var reviewer = ReviewerPreset.second();
 

@@ -29,6 +29,7 @@ public class ReviewerPreset {
         reviewer.setReviewerNames(reviewerData.getName());
         reviewer.setMemberId(Long.parseLong(reviewerData.getId()));
         reviewer.setAccessLevelGitLab(AccessLevel.MAINTAINER);
+        reviewer.setReviewAccess(reviewerData.isActive());
 
         var info = new ReviewerInfo();
         info.setReviewer(reviewer);

@@ -15,8 +15,8 @@ public class MergeRequestPreset {
         request.setState("OPEN");
         request.setProjectId(1L);
         request.setTitle("Test merge request first");
-        request.setSourceBranch("test_1");
-        request.setTargetBranch("main");
+        request.setSourceBranch(GitBranch.TEST_1.getName());
+        request.setTargetBranch(GitBranch.MAIN.getName());
         return request;
     }
 
@@ -30,8 +30,8 @@ public class MergeRequestPreset {
         request.setState("OPEN");
         request.setProjectId(1L);
         request.setTitle("Test merge request second");
-        request.setSourceBranch("test_1");
-        request.setTargetBranch("main");
+        request.setSourceBranch(GitBranch.TEST_2.getName());
+        request.setTargetBranch(GitBranch.MAIN.getName());
         return request;
     }
 
