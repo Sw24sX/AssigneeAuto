@@ -38,7 +38,6 @@ dependencies {
                     'org.mapstruct:mapstruct:1.5.3.Final',
                     'com.google.guava:guava:31.1-jre'
 
-
     compileOnly 'javax.websocket:javax.websocket-api:1.1',
                 'org.projectlombok:lombok'
 
@@ -55,7 +54,9 @@ dependencies {
                         "com.tngtech.archunit:archunit-junit5:0.23.1",
                         'org.springframework.integration:spring-integration-test-support',
                         'org.springframework.integration:spring-integration-test',
-                        'org.springframework.boot:spring-boot-starter-test'
+                        'org.springframework.boot:spring-boot-starter-test',
+                        'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
