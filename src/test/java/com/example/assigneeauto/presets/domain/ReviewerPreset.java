@@ -17,6 +17,21 @@ public class ReviewerPreset {
         return createByReviewerData(reviewerData);
     }
 
+    public static Reviewer third() {
+        var reviewerData = ReviewerDataPreset.third();
+        return createByReviewerData(reviewerData);
+    }
+
+    public static Reviewer fourth() {
+        var reviewerData = ReviewerDataPreset.fourth();
+        return createByReviewerData(reviewerData);
+    }
+
+    public static Reviewer fifth() {
+        var reviewerData = ReviewerDataPreset.fifth();
+        return createByReviewerData(reviewerData);
+    }
+
     public static Reviewer inactive() {
         var reviewerData = ReviewerDataPreset.inactive();
         return createByReviewerData(reviewerData);

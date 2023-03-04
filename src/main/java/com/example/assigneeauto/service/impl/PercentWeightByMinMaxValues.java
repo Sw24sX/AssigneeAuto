@@ -32,7 +32,7 @@ public class PercentWeightByMinMaxValues implements PercentWeightByMinMaxValuesA
         }
 
         var weight = settings.getWeightByNotValuesApi().getPersonalWeight(settings.getReviewer(), settings.getMergeRequest());
-        Integer result = Math.toIntExact(calculateWeight(minCount, maxCount, weight));
+        var result = Math.toIntExact(calculateWeight(minCount, maxCount, weight));
         return settings.isRevert() ? MAX_WEIGHT_VALUE - result : result;
     }
 

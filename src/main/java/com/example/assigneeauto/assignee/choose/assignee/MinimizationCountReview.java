@@ -46,8 +46,6 @@ public class MinimizationCountReview extends PartChooseAssignee {
 
     private class CurrentWeight implements WeightByNotValuesApi {
 
-        private static final String CACHE_KEY = "MinimizationCountReview";
-
         @Override
         public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             try {
@@ -56,11 +54,6 @@ public class MinimizationCountReview extends PartChooseAssignee {
             } catch (GitLabApiException e) {
                 throw new AutoAssigneeException(e.getMessage());
             }
-        }
-
-        @Override
-        public String getCacheKey() {
-            return CACHE_KEY;
         }
     }
 }

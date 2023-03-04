@@ -49,7 +49,6 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
     protected Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run NumberChangesMergeRequestFiles for reviewer {}", reviewer.getUsername());
         String newBranchName = mergeRequest.getSourceBranch();
-        gitServiceApi.updateRepository();
         PercentWeightByMinMaxSettings settings = PercentWeightByMinMaxSettings
                 .builder()
                 .reviewer(reviewer)
@@ -61,7 +60,6 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
 
     private class CurrentWeight implements WeightByNotValuesApi {
 
-        private static final String CACHE_KEY = "NumberChangesMergeRequestFiles";
         private final String newBranchName;
 
         private CurrentWeight(String newBranchName) {
@@ -90,6 +88,7 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
                 return result.get().getCountRowsByReviewerName();
             }
 
+            gitServiceApi.updateRepository();
             var rowCount = new HashMap<String, Long>();
 
             for (DiffEntry diff : gitServiceApi.getDiffBranches(newBranchName)) {
@@ -113,11 +112,6 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
 
         private String buildCacheKey(MergeRequest mergeRequest) {
             return String.format("NumberChangesMergeRequestFiles_%s", mergeRequest.getIid());
-        }
-
-        @Override
-        public String getCacheKey() {
-            return CACHE_KEY;
         }
     }
 }

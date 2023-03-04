@@ -9,6 +9,4 @@ import org.gitlab4j.api.models.MergeRequest;
  */
 public interface WeightByNotValuesApi {
     Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest);
-
-    String getCacheKey();
 }
