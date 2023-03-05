@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProjectInfoRepository extends JpaRepository<ProjectInfo, Long> {
 
     Boolean existsByProjectId(String projectId);
+
+    ProjectInfo findByProjectId(String projectId);
 }

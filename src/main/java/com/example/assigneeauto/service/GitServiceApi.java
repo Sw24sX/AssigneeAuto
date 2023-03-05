@@ -1,8 +1,8 @@
 package com.example.assigneeauto.service;
 
+import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.lib.Ref;
 
 import java.util.List;
 
@@ -14,14 +14,14 @@ public interface GitServiceApi {
     /**
      * Обновить репозиторий (git fetch + git pull)
      */
-    void updateRepository();
+    void updateRepository(String sourceBranch, String targetBranch, ProjectInfo projectInfo);
 
     /**
      * Обновить вутку (git pull *branch name*)
      *
      * @param branchName Название ветки
      */
-    void updateBranch(String branchName);
+    void updateBranch(String sourceBranch, String targetBranch, ProjectInfo projectInfo);
 
     /**
      * Получить спосок изменений между ветками (git diff oldBranch newBranch)
@@ -29,14 +29,8 @@ public interface GitServiceApi {
      * @param newBranchName Имя новой ветки, с которой будет сравниваться основная
      * @return Список изменений
      */
-    List<DiffEntry> getDiffBranches(String newBranchName);
+    List<DiffEntry> getDiffBranches(String sourceBranch, String targetBranch, ProjectInfo projectInfo);
 
-    /**
-     * Список всех веток репозитория
-     *
-     * @return Список всех веток репозитория
-     */
-    List<Ref> getAllBranches();
 
     /**
      * Получить информацию о последнем авторе изменения каждой строки файла (git blame path/to/file)
@@ -44,5 +38,7 @@ public interface GitServiceApi {
      * @param fileFromRepo Путь к файлу от корня репозитория
      * @return Результат git blame
      */
-    BlameResult getBlameFile(String fileFromRepo);
+    BlameResult getBlameFile(String fileFromRepo, ProjectInfo projectInfo);
+
+    boolean cloneRepository(String url, ProjectInfo projectInfo);
 }

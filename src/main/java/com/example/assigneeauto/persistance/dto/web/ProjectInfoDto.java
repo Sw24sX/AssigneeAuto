@@ -8,4 +8,5 @@ public class ProjectInfoDto {
     private String projectId;
     private String name;
     private Boolean isEnabled;
+    private String repositoryUrl;
 }

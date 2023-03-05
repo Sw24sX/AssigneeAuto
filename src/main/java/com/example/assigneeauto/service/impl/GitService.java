@@ -1,11 +1,13 @@
 package com.example.assigneeauto.service.impl;
 
+import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.persistance.properties.GitRepoProperties;
+import com.example.assigneeauto.persistance.properties.GitlabApiProperties;
 import com.example.assigneeauto.service.GitServiceApi;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -17,6 +19,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -24,51 +27,62 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @RequiredArgsConstructor
+@Slf4j
 public class GitService implements GitServiceApi {
 
     private static final String FULL_BRANCH_NAME_FORMAT = "refs/remotes/origin/%s";
 
     private final GitRepoProperties properties;
     private final CredentialsProvider credentialsProvider;
-    private final Git git;
+    private final GitlabApiProperties gitlabApiProperties;
 
     @Override
-    public void updateRepository() {
-        try {
+    public void updateRepository(String sourceBranch, String targetBranch, ProjectInfo projectInfo) {
+
+        var path = getPath(projectInfo);
+        try(var git = Git.open(path)) {
             git.fetch()
                 .setCredentialsProvider(credentialsProvider)
                 .call();
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | IOException e) {
             throw new AutoAssigneeException(e.getMessage());
         }
-        updateBranch(properties.getBaseBranchName());
+        updateBranch(sourceBranch, targetBranch, projectInfo);
     }
 
     @Override
-    public void updateBranch(String branchName) {
-        try {
+    public void updateBranch(String sourceBranch, String targetBranch, ProjectInfo projectInfo) {
+
+        var path = getPath(projectInfo);
+        try(var git = Git.open(path)) {
             git.pull()
-                .setRemoteBranchName(branchName)
+                .setRemoteBranchName(sourceBranch)
                 .setCredentialsProvider(credentialsProvider)
                 .call();
-        } catch (GitAPIException e) {
+            git.pull()
+                    .setRemoteBranchName(targetBranch)
+                    .setCredentialsProvider(credentialsProvider)
+                    .call();
+        } catch (GitAPIException | IOException e) {
             throw new AutoAssigneeException(e.getMessage());
         }
     }
 
     @Override
-    @Cacheable(value = "diff-branches", key = "#newBranchName")
-    public List<DiffEntry> getDiffBranches(String newBranchName) {
-        try {
+    @Cacheable(value = "diff-branches", key = "#sourceBranch")
+    public List<DiffEntry> getDiffBranches(String sourceBranch, String targetBranch, ProjectInfo projectInfo) {
 
-            String oldFillBranchName = String.format(FULL_BRANCH_NAME_FORMAT, properties.getBaseBranchName());
-            String newFullBranchName = String.format(FULL_BRANCH_NAME_FORMAT, newBranchName);
+        var path = getPath(projectInfo);
+        try(var git = Git.open(path)) {
+            String oldFillBranchName = String.format(FULL_BRANCH_NAME_FORMAT, targetBranch);
+            String newFullBranchName = String.format(FULL_BRANCH_NAME_FORMAT, sourceBranch);
 
             Repository repository = git.getRepository();
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repository, oldFillBranchName);
@@ -97,27 +111,43 @@ public class GitService implements GitServiceApi {
     }
 
     @Override
-    public List<Ref> getAllBranches() {
-        try {
+    @Cacheable(value = "blame-file", key = "#fileFromRepo")
+    public BlameResult getBlameFile(String fileFromRepo, ProjectInfo projectInfo) {
 
-            return git.branchList()
-                .setListMode(ListBranchCommand.ListMode.ALL)
+        var path = getPath(projectInfo);
+        try(var git = Git.open(path)) {
+            return git.blame()
+                .setFilePath(fileFromRepo)
+                .setDiffAlgorithm(new HistogramDiff())
                 .call();
-        } catch (GitAPIException e) {
+        } catch (GitAPIException | IOException e) {
             throw new AutoAssigneeException(e.getMessage());
         }
     }
 
     @Override
-    @Cacheable(value = "blame-file", key = "#fileFromRepo")
-    public BlameResult getBlameFile(String fileFromRepo) {
+    public boolean cloneRepository(String url, ProjectInfo projectInfo) {
+
+        var path = getPath(projectInfo);
         try {
-            return git.blame()
-                .setFilePath(fileFromRepo)
-                .setDiffAlgorithm(new HistogramDiff())
+            CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(
+                    gitlabApiProperties.getUsername(),
+                    gitlabApiProperties.getToken());
+
+            Git.cloneRepository()
+                .setDirectory(path)
+                .setURI(url)
+                .setCredentialsProvider(credentialsProvider)
                 .call();
+            return true;
         } catch (GitAPIException e) {
-            throw new AutoAssigneeException(e.getMessage());
+            log.warn(e.getMessage(), e.getCause());
+            return false;
         }
+    }
+
+    private File getPath(ProjectInfo projectInfo) {
+        var path = new File(properties.getPath() + projectInfo.getName());
+        return path;
     }
 }

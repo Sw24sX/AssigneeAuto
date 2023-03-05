@@ -47,4 +47,6 @@ public interface ProjectInfoServiceApi {
     ProjectInfo initNew();
 
     List<ProjectInfo> getAllByIds(List<Long> ids);
+
+    ProjectInfo getByProjectId(String projectId);
 }

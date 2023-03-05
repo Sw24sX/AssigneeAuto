@@ -9,5 +9,4 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class MaxMergeRequestPerReviewerProperties extends BaseAutoAssigneePartProperties {
-    private Integer maxMergeRequests = 4;
 }

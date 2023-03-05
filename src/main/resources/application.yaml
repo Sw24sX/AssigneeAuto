@@ -10,7 +10,6 @@ auto-assignee:
   excluded:
     part:
       max-merge-request-per-reviewer:
-        max-merge-requests: '4'
         enable: 'false'
       review-task-branch:
         enable: 'false'
@@ -21,12 +20,9 @@ git:
   lab:
     api:
       url: ${GITLAB_URL}
-      project-id: ${GITLAB_PROJECT_ID}
       token: ${GITLAB_TOKEN}
       username: ${GITLAB_USERNAME}
   repo:
-    url: ${GIT_REPO_URL}
-    base-branch-name: ${GIT_REPO_BASE_BRANCH_NAME}
     path: ${GIT_REPO_PATH}
 
 spring:

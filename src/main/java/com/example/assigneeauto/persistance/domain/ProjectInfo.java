@@ -3,7 +3,6 @@ package com.example.assigneeauto.persistance.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -19,4 +18,6 @@ public class ProjectInfo extends BaseEntity {
 
     @Column(name = "auto_assignee_enable")
     private Boolean isAutoAssigneeEnable;
+
+    private String repositoryUrl;
 }

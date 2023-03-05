@@ -3,6 +3,7 @@ package com.example.assigneeauto.service.impl;
 import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import com.example.assigneeauto.persistance.mapper.ProjectInfoMapper;
 import com.example.assigneeauto.repository.ProjectInfoRepository;
+import com.example.assigneeauto.service.GitServiceApi;
 import com.example.assigneeauto.service.GitlabServiceApi;
 import com.example.assigneeauto.service.ProjectInfoServiceApi;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
     private final ProjectInfoRepository projectInfoRepository;
     private final GitlabServiceApi gitlabServiceApi;
     private final ProjectInfoMapper projectInfoMapper;
+    private final GitServiceApi gitServiceApi;
 
     @Override
     public List<ProjectInfo> getAll() {
@@ -36,6 +38,9 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
         var project = gitlabServiceApi.getProject(info.getProjectId());
         var createdProject = projectInfoMapper.from(project);
         projectInfoMapper.updateProjectInfo(info, createdProject);
+        if (!gitServiceApi.cloneRepository(info.getRepositoryUrl(), createdProject)) {
+            return Map.of("repositoryUrl", "Не удалось клонировать репозиторий");
+        }
         projectInfoRepository.save(createdProject);
         return Map.of();
     }
@@ -71,5 +76,10 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
     @Override
     public List<ProjectInfo> getAllByIds(List<Long> ids) {
         return projectInfoRepository.findAllById(ids);
+    }
+
+    @Override
+    public ProjectInfo getByProjectId(String projectId) {
+        return projectInfoRepository.findByProjectId(projectId);
     }
 }

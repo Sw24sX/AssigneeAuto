@@ -8,6 +8,7 @@ import com.example.assigneeauto.persistance.properties.choose.assignee.propertie
 import com.example.assigneeauto.repository.cache.NumberChangesMergeRequestCacheRepository;
 import com.example.assigneeauto.service.GitServiceApi;
 import com.example.assigneeauto.service.PercentWeightByMinMaxValuesApi;
+import com.example.assigneeauto.service.ProjectInfoServiceApi;
 import com.example.assigneeauto.service.WeightByNotValuesApi;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.blame.BlameResult;
@@ -34,37 +35,33 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
     private final GitServiceApi gitServiceApi;
     private final PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi;
     private final NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository;
+    private final ProjectInfoServiceApi projectInfoServiceApi;
 
     protected NumberChangesMergeRequestFiles(NumberChangesMergeRequestFilesProperties properties,
                                              GitServiceApi gitServiceApi,
                                              PercentWeightByMinMaxValuesApi percentWeightByMinMaxValuesApi,
-                                             NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository) {
+                                             NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository,
+                                             ProjectInfoServiceApi projectInfoServiceApi) {
         super(properties);
         this.gitServiceApi = gitServiceApi;
         this.percentWeightByMinMaxValuesApi = percentWeightByMinMaxValuesApi;
         this.numberChangesMergeRequestCacheRepository = numberChangesMergeRequestCacheRepository;
+        this.projectInfoServiceApi = projectInfoServiceApi;
     }
 
     @Override
     protected Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run NumberChangesMergeRequestFiles for reviewer {}", reviewer.getUsername());
-        String newBranchName = mergeRequest.getSourceBranch();
         PercentWeightByMinMaxSettings settings = PercentWeightByMinMaxSettings
                 .builder()
                 .reviewer(reviewer)
                 .mergeRequest(mergeRequest)
-                .weightByNotValuesApi(new CurrentWeight(newBranchName))
+                .weightByNotValuesApi(new CurrentWeight())
                 .build();
         return percentWeightByMinMaxValuesApi.getCorrectWeight(settings);
     }
 
     private class CurrentWeight implements WeightByNotValuesApi {
-
-        private final String newBranchName;
-
-        private CurrentWeight(String newBranchName) {
-            this.newBranchName = newBranchName;
-        }
 
         @Override
         public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
@@ -88,11 +85,12 @@ public class NumberChangesMergeRequestFiles extends PartChooseAssignee {
                 return result.get().getCountRowsByReviewerName();
             }
 
-            gitServiceApi.updateRepository();
+            var project = projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString());
+            gitServiceApi.updateRepository(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project);
             var rowCount = new HashMap<String, Long>();
 
-            for (DiffEntry diff : gitServiceApi.getDiffBranches(newBranchName)) {
-                BlameResult blameResult = gitServiceApi.getBlameFile(diff.getNewPath());
+            for (DiffEntry diff : gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)) {
+                BlameResult blameResult = gitServiceApi.getBlameFile(diff.getNewPath(), project);
                 if (blameResult == null) {
                     log.warn("In NumberChangesMergeRequestFiles, 'blame result' for file {} is null", diff.getNewPath());
                     continue;
