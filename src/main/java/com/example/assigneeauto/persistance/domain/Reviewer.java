@@ -35,4 +35,7 @@ public class Reviewer extends BaseEntity {
 
     @OneToOne(mappedBy = "reviewer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ReviewerInfo info;
+
+    @ManyToMany(mappedBy = "reviewers")
+    private List<ProjectInfo> projects;
 }

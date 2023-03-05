@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.Member;
-import org.gitlab4j.api.models.MergeRequest;
-import org.gitlab4j.api.models.MergeRequestFilter;
-import org.gitlab4j.api.models.MergeRequestParams;
+import org.gitlab4j.api.models.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -72,5 +69,10 @@ public class GitlabService implements GitlabServiceApi {
         }
         log.info("For merge request {} assign reviewer {} success", mergeRequestIid, reviewer.getUsername());
         return true;
+    }
+
+    @Override
+    public Project getProject(String projectId) throws GitLabApiException {
+        return gitLabApi.getProjectApi().getProject(projectId);
     }
 }

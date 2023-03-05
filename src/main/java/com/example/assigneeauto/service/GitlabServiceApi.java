@@ -5,6 +5,7 @@ import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
+import org.gitlab4j.api.models.Project;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,4 +50,6 @@ public interface GitlabServiceApi {
      * @return Успешность назначения ревьювера (true - успех)
      */
     boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException;
+
+    Project getProject(String projectId) throws GitLabApiException;
 }

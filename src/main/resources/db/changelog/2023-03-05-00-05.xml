@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="2023-03-05-00-05" author="KorolyovAS">
+
+        <createTable tableName="project_info">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="project_info_id_pk" />
+            </column>
+            <column name="project_id" type="varchar">
+                <constraints nullable="false" unique="true" uniqueConstraintName="project_info_project_id_uk"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints nullable="false" unique="true" uniqueConstraintName="project_info_name_uk"/>
+            </column>
+            <column name="auto_assignee_enable" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="reviewer_project_info">
+            <column name="reviewer_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_info_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint  baseColumnNames="reviewer_id"
+                                  baseTableName="reviewer_project_info"
+                                  constraintName="reviewer_project_info_reviewer_id_fk"
+                                  deferrable="true"
+                                  initiallyDeferred="true"
+                                  referencedColumnNames="id"
+                                  referencedTableName="reviewer"
+                                  validate="true"/>
+        
+        <addForeignKeyConstraint  baseColumnNames="project_info_id"
+                                  baseTableName="reviewer_project_info"
+                                  constraintName="reviewer_project_info_project_info_id_fk"
+                                  deferrable="true"
+                                  initiallyDeferred="true"
+                                  referencedColumnNames="id"
+                                  referencedTableName="project_info"
+                                  validate="true"/>
+        <addUniqueConstraint tableName="reviewer_project_info" columnNames="reviewer_id, project_info_id"/>
+    </changeSet>
+</databaseChangeLog>
