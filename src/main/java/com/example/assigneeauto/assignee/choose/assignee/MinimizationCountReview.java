@@ -50,7 +50,7 @@ public class MinimizationCountReview extends PartChooseAssignee {
         public Long getPersonalWeight(Reviewer reviewer, MergeRequest mergeRequest) {
             try {
                 return (long) gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(),
-                        Constants.MergeRequestState.OPENED).size();
+                        Constants.MergeRequestState.OPENED, mergeRequest.getProjectId().toString()).size();
             } catch (GitLabApiException e) {
                 throw new AutoAssigneeException(e.getMessage());
             }

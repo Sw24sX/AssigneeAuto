@@ -20,11 +20,6 @@ public class GitlabApiProperties {
     private String token;
 
     /**
-     * id проекта
-     */
-    private String projectId;
-
-    /**
      * Имя пользователя для доступа к gitlab
      */
     private String username;

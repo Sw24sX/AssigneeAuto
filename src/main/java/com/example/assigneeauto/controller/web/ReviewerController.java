@@ -56,7 +56,6 @@ public class ReviewerController {
         var reviewer = reviewerServiceApi.initReviewer();
         var projects = projectInfoServiceApi.getAll().stream()
                 .map(projectInfoMapper::toReviewerProjectInfoDto)
-                .peek(x -> x.setChecked(reviewer.getProjects().stream().anyMatch(project -> Objects.equals(project.getId(), x.id))))
                 .toList();
         var dto = reviewerMapper.from(reviewer);
         dto.setProjects(projects);

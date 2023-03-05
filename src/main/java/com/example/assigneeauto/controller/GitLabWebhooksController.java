@@ -21,7 +21,8 @@ public class GitLabWebhooksController {
     @PostMapping("merge-request")
     public void mergeRequestEvent(@RequestBody MergeRequestEventGitLab mergeRequestEventGitLab) {
         var mergeRequestIid = mergeRequestEventGitLab.getObjectAttributes().getIid();
-        var event = new MergeRequestEvent(this, mergeRequestIid);
+        var projectId = mergeRequestEventGitLab.getProject().getId();
+        var event = new MergeRequestEvent(this, mergeRequestIid, projectId);
         //Отправляем эвент на асинхронную обработку, т.к. обработка пришедшего запроса может затянуться
         //из-за чего GitLab может нас заблочить по неуспешно обрабатываемым запросам по времени
         applicationEventPublisher.publishEvent(event);

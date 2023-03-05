@@ -19,14 +19,14 @@ public interface GitlabServiceApi {
      * Список участников проекта
      * @return Список участников проекта
      */
-    List<Member> getListMembers() throws GitLabApiException;
+    List<Member> getListMembers(String projectId) throws GitLabApiException;
 
     /**
      * Получить участника проекта по его имени пользователя
      * @param username имя пользователя искомого участника
      * @return искомый участник или null
      */
-    Member getMember(String username) throws GitLabApiException;
+    Member getMember(String username, String projectId) throws GitLabApiException;
 
     /**
      * Список merge request проекта по id ревьювера
@@ -34,14 +34,14 @@ public interface GitlabServiceApi {
      * @param status статус возвращаемых merge request
      * @return список подходящих merge request
      */
-    List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status) throws GitLabApiException;
+    List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status, String projectId) throws GitLabApiException;
 
     /**
      * Merge request проекта по iid
      * @param iid уникальный номер merge request
      * @return merge request с заданным iid
      */
-    Optional<MergeRequest> getMergeRequest(Long iid);
+    Optional<MergeRequest> getMergeRequest(Long iid, String projectId);
 
     /**
      * Назначить ревьювера на merge request
@@ -49,7 +49,7 @@ public interface GitlabServiceApi {
      * @param reviewer Назначаемый участник проекта
      * @return Успешность назначения ревьювера (true - успех)
      */
-    boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException;
+    boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer, String projectId) throws GitLabApiException;
 
     Project getProject(String projectId) throws GitLabApiException;
 }

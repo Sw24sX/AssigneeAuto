@@ -7,9 +7,11 @@ import org.springframework.context.ApplicationEvent;
 public class MergeRequestEvent extends ApplicationEvent {
 
     private final Long mergeRequestIid;
+    private final Long projectId;
 
-    public MergeRequestEvent(Object source, Long mergeRequestIid) {
+    public MergeRequestEvent(Object source, Long mergeRequestIid, Long projectId) {
         super(source);
         this.mergeRequestIid = mergeRequestIid;
+        this.projectId = projectId;
     }
 }

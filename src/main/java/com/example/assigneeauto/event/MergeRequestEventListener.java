@@ -18,6 +18,6 @@ public class MergeRequestEventListener {
     @Async
     @EventListener
     public void mergeRequestListener(MergeRequestEvent event) {
-        mergeRequestServiceApi.setAutoAssigneeOrIgnore(event.getMergeRequestIid());
+        mergeRequestServiceApi.setAutoAssigneeOrIgnore(event.getMergeRequestIid(), event.getProjectId().toString());
     }
 }

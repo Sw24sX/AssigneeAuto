@@ -33,7 +33,7 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
         log.info("Run MaxMergeRequestPerReviewer for reviewer {}", reviewer.getUsername());
         try {
             var mergeRequests = gitlabServiceApi
-                    .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
+                    .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED, mergeRequest.getProjectId().toString());
             return mergeRequests.size() >= reviewer.getInfo().getMaxCountReview();
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());

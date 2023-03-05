@@ -28,13 +28,13 @@ public class GitlabService implements GitlabServiceApi {
 
     @Override
     @Cacheable(value = "members")
-    public List<Member> getListMembers() throws GitLabApiException {
-        return gitLabApi.getProjectApi().getMembers(gitlabApiProperties.getProjectId());
+    public List<Member> getListMembers(String projectId) throws GitLabApiException {
+        return gitLabApi.getProjectApi().getMembers(projectId);
     }
 
     @Override
-    public Member getMember(String username) throws GitLabApiException {
-        return getListMembers().stream()
+    public Member getMember(String username, String projectId) throws GitLabApiException {
+        return getListMembers(projectId).stream()
                 .filter(x -> x.getUsername().equals(username))
                 .findFirst()
                 .orElse(null);
@@ -42,27 +42,27 @@ public class GitlabService implements GitlabServiceApi {
 
     @Override
     @Cacheable(value = "merge-request-by-status-and-assignee", key = "#assigneeId")
-    public List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status) throws GitLabApiException {
+    public List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status, String projectId) throws GitLabApiException {
         MergeRequestFilter filter = new MergeRequestFilter();
         filter.setAssigneeId(assigneeId);
         filter.setState(status);
-        filter.setProjectId(Long.parseLong(gitlabApiProperties.getProjectId()));
+        filter.setProjectId(Long.parseLong(projectId));
         return gitLabApi.getMergeRequestApi().getMergeRequests(filter);
     }
 
     @Override
     @Cacheable(value = "merge-request", key = "#iid")
-    public Optional<MergeRequest> getMergeRequest(Long iid) {
-        return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(gitlabApiProperties.getProjectId(), iid);
+    public Optional<MergeRequest> getMergeRequest(Long iid, String projectId) {
+        return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(projectId, iid);
     }
 
 
     @Override
-    public boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer) throws GitLabApiException {
+    public boolean setAssigneeToMergeRequest(Long mergeRequestIid, Reviewer reviewer, String projectId) throws GitLabApiException {
         MergeRequestParams newParams = new MergeRequestParams();
         newParams.withAssigneeId(reviewer.getMemberId());
         var result = gitLabApi.getMergeRequestApi()
-                .updateMergeRequest(gitlabApiProperties.getProjectId(), mergeRequestIid, newParams);
+                .updateMergeRequest(projectId, mergeRequestIid, newParams);
         if (result.getAssignee() == null) {
             log.warn("For merge request {} assign reviewer {} not success", mergeRequestIid, reviewer.getUsername());
             return false;

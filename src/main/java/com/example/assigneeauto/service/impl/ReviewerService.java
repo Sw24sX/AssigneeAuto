@@ -59,6 +59,11 @@ public class ReviewerService implements ReviewerServiceApi {
             errors.put("id", "Не удалось найти ревьювера с таким Id");
             return errors;
         }
+        if (projects.isEmpty()) {
+            var errors = new HashMap<String, String>();
+            errors.put("projects", "Необходимо выбрать хотя бы один проект");
+            return errors;
+        }
         reviewerMapper.updateReviewer(updated, reviewer);
         reviewer.setProjects(projects);
         reviewerRepository.save(reviewer);
@@ -75,25 +80,31 @@ public class ReviewerService implements ReviewerServiceApi {
         reviewer.setReviewAccess(true);
         reviewerMapper.updateReviewer(created, reviewer);
 
-        var errors = validateReviewer(reviewer);
+        if (projects.isEmpty()) {
+            return Map.of("projects", "Необходимо выбрать хотя бы один проект");
+        }
+
+        var projectId = projects.get(0).getProjectId();
+        var errors = validateReviewer(reviewer, projectId);
         if (!errors.isEmpty()) {
             return errors;
         }
 
-        var member = gitlabServiceApi.getMember(created.getUsername());
+        var member = gitlabServiceApi.getMember(created.getUsername(), projectId);
         reviewerMapper.updateReviewer(member, reviewer);
+        reviewer.setProjects(projects);
         reviewerRepository.save(reviewer);
         return errors;
     }
 
     @SneakyThrows
-    private Map<String, String> validateReviewer(Reviewer reviewer) {
+    private Map<String, String> validateReviewer(Reviewer reviewer, String projectId) {
         var errors = new HashMap<String, String>();
         if (reviewerRepository.existsByUsername(reviewer.getUsername())) {
             errors.put("username", "Ревьювер с таким именем пользователя уже существует");
         }
         if (reviewer.getId() == null) {
-            var member = gitlabServiceApi.getMember(reviewer.getUsername());
+            var member = gitlabServiceApi.getMember(reviewer.getUsername(), projectId);
             if (member == null) {
                 errors.put("username", "Ревьювер с таким именем пользователя не найден в проекте");
             }

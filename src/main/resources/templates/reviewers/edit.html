@@ -70,6 +70,7 @@
                         <tr th:each="project, stat : ${reviewer.projects}">
                             <td class="w-75">
                                 <input class="d-none" type="number" th:field="*{projects[__${stat.index}__].id}"/>
+                                <input class="d-none" type="text" th:field="*{projects[__${stat.index}__].name}"/>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" th:field="*{projects[__${stat.index}__].checked}">
                                     <label class="form-check-label" th:text="${project.name}"></label>

@@ -29,15 +29,15 @@ public class MergeRequestService implements MergeRequestServiceApi {
     private final ProjectInfoServiceApi projectInfoServiceApi;
 
     @Override
-    public void setAssignee(Long mergeRequestIid, Reviewer reviewer) {
+    public void setAssignee(Long mergeRequestIid, Reviewer reviewer, String projectId) {
 
         try {
-            var projectMembers = gitlabServiceApi.getListMembers();
+            var projectMembers = gitlabServiceApi.getListMembers(projectId);
             if (projectMembers.stream().noneMatch(member -> Objects.equals(member.getId(), reviewer.getMemberId()))) {
                 throw new AutoAssigneeException("Участник c id '%s' не найден в проекте", reviewer.getMemberId().toString());
             }
 
-            gitlabServiceApi.setAssigneeToMergeRequest(mergeRequestIid, reviewer);
+            gitlabServiceApi.setAssigneeToMergeRequest(mergeRequestIid, reviewer, projectId);
 
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());
@@ -50,7 +50,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
 
         try {
             var reviewer = fullChooseAssignee.getAssignee(mergeRequest);
-            var result = gitlabServiceApi.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer);
+            var result = gitlabServiceApi.setAssigneeToMergeRequest(mergeRequest.getIid(), reviewer, mergeRequest.getProjectId().toString());
             updateReviewer(reviewer, mergeRequest, result);
             return result;
 
@@ -61,7 +61,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
     }
 
     @Override
-    public boolean setAutoAssigneeOrIgnore(Long mergeRequestIid) {
+    public boolean setAutoAssigneeOrIgnore(Long mergeRequestIid, String projectId) {
         log.info("Start process merge request with iid {}", mergeRequestIid);
         var historyReview = historyReviewRepository.findByMergeRequestIid(mergeRequestIid);
         if (historyReview != null) {
@@ -70,7 +70,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
             return false;
         }
 
-        var mergeRequest = getMergeRequestGitLab(mergeRequestIid);
+        var mergeRequest = getMergeRequestGitLab(mergeRequestIid, projectId);
         if (mergeRequest.getAssignee() != null) {
             log.warn("Merge request {} was ignored, because assignee already exists", mergeRequestIid);
             return false;
@@ -84,9 +84,9 @@ public class MergeRequestService implements MergeRequestServiceApi {
     }
 
     @Override
-    public MergeRequest getMergeRequestGitLab(Long mergeRequestIid) {
+    public MergeRequest getMergeRequestGitLab(Long mergeRequestIid, String projectId) {
 
-        var mergeRequest = gitlabServiceApi.getMergeRequest(mergeRequestIid)
+        var mergeRequest = gitlabServiceApi.getMergeRequest(mergeRequestIid, projectId)
                 .orElseThrow(() -> new AutoAssigneeException("Merge request c id '%s' не найден в проекте",
                         mergeRequestIid.toString()));
         if (!mergeRequest.getState().equals(Constants.MergeRequestState.OPENED.toValue())) {
