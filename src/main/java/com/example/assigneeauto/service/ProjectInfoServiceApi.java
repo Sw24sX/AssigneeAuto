@@ -36,4 +36,13 @@ public interface ProjectInfoServiceApi {
      * @return результат проверки, где true - проект доступен для автоназначения ревьювера
      */
     Boolean isProjectEnable(String projectId);
+
+    /**
+     * Получить проект по id в бд
+     * @param id идентификатор проекта в бд
+     * @return проект или null
+     */
+    ProjectInfo getById(Long id);
+
+    ProjectInfo initNew();
 }

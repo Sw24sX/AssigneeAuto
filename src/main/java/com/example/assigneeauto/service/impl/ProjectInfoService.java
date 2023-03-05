@@ -35,6 +35,7 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
         }
         var project = gitlabServiceApi.getProject(info.getProjectId());
         var createdProject = projectInfoMapper.from(project);
+        projectInfoMapper.updateProjectInfo(info, createdProject);
         projectInfoRepository.save(createdProject);
         return Map.of();
     }
@@ -53,5 +54,17 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
     @Override
     public Boolean isProjectEnable(String projectId) {
         return projectInfoRepository.existsByProjectId(projectId);
+    }
+
+    @Override
+    public ProjectInfo getById(Long id) {
+        return projectInfoRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public ProjectInfo initNew() {
+        var result = new ProjectInfo();
+        result.setIsAutoAssigneeEnable(true);
+        return result;
     }
 }

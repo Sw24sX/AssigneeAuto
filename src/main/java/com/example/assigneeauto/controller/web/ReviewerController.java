@@ -19,6 +19,7 @@ public class ReviewerController {
     public ModelAndView getAll() {
         var reviewers = reviewerServiceApi.getAll();
         var result = new ModelAndView("reviewers/reviewers");
+        // TODO: 05.03.2023 map to dto
         result.addObject("reviewers", reviewers);
         return result;
     }

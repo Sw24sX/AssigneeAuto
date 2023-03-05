@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title th:if="${project.id}">Редактирование проекта</title>
+    <title th:unless="${project.id}">Добавление проекта</title>
+    <link href="/static/css/bootstrap.css" rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+</head>
+
+<body>
+
+<div th:insert="common/navbar"></div>
+
+<div class="container">
+    <div class="h-100 p-5 bg-light border rounded-3">
+        <h3 th:if="${project.id}">Редактирование проекта</h3>
+        <h3 th:unless="${project.id}">Добавление проекта</h3>
+        <div th:if="errors">
+            <div class="alert alert-danger" role="alert" th:each="error : ${errors}" th:text="${error.value}">
+
+            </div>
+        </div>
+        <form action="#" th:action="@{/project/edit}" th:object="${project}" method="post">
+            <input class="d-none" type="number" th:field="*{id}"/>
+            <input class="d-none" type="number" th:field="*{name}"/>
+            <div class="form-group">
+                <label>ProjectId в GitLab</label>
+                <span th:if="${project.id}" class="font-weight-bold" th:text="*{projectId}"/>
+                <input th:unless="${project.id}" class="form-control" type="text" th:field="*{projectId}"/>
+            </div>
+            <div class="form-group" th:if="${project.id}">
+                <label>Название проекта</label>
+                <span class="font-weight-bold" th:text="*{name}"/>
+            </div>
+            <div class="form-group">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="review_access" th:field="*{isEnabled}">
+                    <label class="form-check-label" for="review_access">Разрешить автоматическое назначение</label>
+                </div>
+            </div>
+
+            <button type="submit" name="save" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+</div>
+
+<div th:insert="common/load_faster"></div>
+</body>
+</html>

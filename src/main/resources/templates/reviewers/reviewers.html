@@ -28,7 +28,7 @@
       <tbody id="test" th:name="test">
         <tr th:each="reviewer : ${reviewers}" class="clickable-row" data-href="url://reviewer/list">
           <form action="#" th:action="@{/reviewer/edit}" th:object="${reviewer}" method="post">
-            <td ><span href="/reviewer/list" th:text="${reviewer.getUsername()}"/></td>
+            <td ><span th:text="${reviewer.getUsername()}"/></td>
             <td><span th:text="${reviewer.isReviewAccess() ? '✓' : ''}"/></td>
             <td>
               <div class="d-inline p-2">
