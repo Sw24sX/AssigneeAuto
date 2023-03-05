@@ -1,5 +1,6 @@
 package com.example.assigneeauto.presets.test.dto;
 
+import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,4 +17,5 @@ public class ReviewerData {
     private boolean isActive;
     private String email;
     private Integer maxCountReview;
+    private ProjectInfo projectInfo;
 }

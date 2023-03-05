@@ -1,10 +1,12 @@
 package com.example.assigneeauto.assignee.include;
 
 import com.example.assigneeauto.assignee.choose.assignee.NumberChangesMergeRequestFiles;
+import com.example.assigneeauto.presets.domain.ProjectInfoPreset;
 import com.example.assigneeauto.presets.domain.ReviewerPreset;
 import com.example.assigneeauto.presets.test.MergeRequestPreset;
 import com.example.assigneeauto.repository.cache.NumberChangesMergeRequestCacheRepository;
 import com.example.assigneeauto.service.GitServiceApi;
+import com.example.assigneeauto.service.ProjectInfoServiceApi;
 import com.example.assigneeauto.service.ReviewerServiceApi;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -38,6 +40,9 @@ public class NumberChangesMergeRequestFilesTests {
     @MockBean
     private NumberChangesMergeRequestCacheRepository numberChangesMergeRequestCacheRepository;
 
+    @MockBean
+    private ProjectInfoServiceApi projectInfoServiceApi;
+
     @BeforeEach
     public void setUp() {
 //        Mockito.when(numberChangesMergeRequestCacheRepository.findById(Mockito.anyString())).then(x -> null);
@@ -50,12 +55,14 @@ public class NumberChangesMergeRequestFilesTests {
         var mergeRequest = MergeRequestPreset.first();
         var blameResult = Mockito.mock(BlameResult.class);
         var diffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(diffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(diffEntry));
         var newPath = "test/new/path";
         Mockito.when(diffEntry.getNewPath()).thenReturn(newPath);
-        Mockito.when(gitServiceApi.getBlameFile(newPath)).thenReturn(blameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPath, project)).thenReturn(blameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);
@@ -81,12 +88,13 @@ public class NumberChangesMergeRequestFilesTests {
         var mergeRequest = MergeRequestPreset.first();
         var blameResult = Mockito.mock(BlameResult.class);
         var diffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(diffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(diffEntry));
         var newPath = "test/new/path";
         Mockito.when(diffEntry.getNewPath()).thenReturn(newPath);
-        Mockito.when(gitServiceApi.getBlameFile(newPath)).thenReturn(blameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPath, project)).thenReturn(blameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);
@@ -108,9 +116,10 @@ public class NumberChangesMergeRequestFilesTests {
     public void numberChangesOneReviewerWithoutDiffChanges() {
         var reviewer = ReviewerPreset.first();
         var mergeRequest = MergeRequestPreset.first();
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of());
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of());
 
         Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(reviewer));
         var result = numberChangesMergeRequestFiles.getWeight(reviewer, mergeRequest);
@@ -123,12 +132,13 @@ public class NumberChangesMergeRequestFilesTests {
         var mergeRequest = MergeRequestPreset.first();
         var blameResult = Mockito.mock(BlameResult.class);
         var diffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(diffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(diffEntry));
         var newPath = "test/new/path";
         Mockito.when(diffEntry.getNewPath()).thenReturn(newPath);
-        Mockito.when(gitServiceApi.getBlameFile(newPath)).thenReturn(blameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPath, project)).thenReturn(blameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);
@@ -146,12 +156,13 @@ public class NumberChangesMergeRequestFilesTests {
         var mergeRequest = MergeRequestPreset.first();
         var blameResult = Mockito.mock(BlameResult.class);
         var diffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(diffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(diffEntry));
         var newPath = "test/new/path";
         Mockito.when(diffEntry.getNewPath()).thenReturn(newPath);
-        Mockito.when(gitServiceApi.getBlameFile(newPath)).thenReturn(blameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPath, project)).thenReturn(blameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);
@@ -184,16 +195,17 @@ public class NumberChangesMergeRequestFilesTests {
 
         var firstDiffEntry = Mockito.mock(DiffEntry.class);
         var secondDiffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(firstDiffEntry, secondDiffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(firstDiffEntry, secondDiffEntry));
         var newPathFirst = "test/new/path/1";
         var newPathSecond = "test/new/path/1";
         Mockito.when(firstDiffEntry.getNewPath()).thenReturn(newPathFirst);
-        Mockito.when(gitServiceApi.getBlameFile(newPathFirst)).thenReturn(firstBlameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPathFirst, project)).thenReturn(firstBlameResult);
 
         Mockito.when(secondDiffEntry.getNewPath()).thenReturn(newPathSecond);
-        Mockito.when(gitServiceApi.getBlameFile(newPathSecond)).thenReturn(secondBlameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPathSecond, project)).thenReturn(secondBlameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(firstBlameResult.getResultContents()).thenReturn(rawText);
@@ -227,12 +239,13 @@ public class NumberChangesMergeRequestFilesTests {
         var mergeRequest = MergeRequestPreset.first();
         var blameResult = Mockito.mock(BlameResult.class);
         var diffEntry = Mockito.mock(DiffEntry.class);
-        var branch = mergeRequest.getSourceBranch();
+        var project = ProjectInfoPreset.first();
 
-        Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of(diffEntry));
+        Mockito.when(projectInfoServiceApi.getByProjectId(mergeRequest.getProjectId().toString())).thenReturn(project);
+        Mockito.when(gitServiceApi.getDiffBranches(mergeRequest.getSourceBranch(), mergeRequest.getTargetBranch(), project)).thenReturn(List.of(diffEntry));
         var newPath = "test/new/path";
         Mockito.when(diffEntry.getNewPath()).thenReturn(newPath);
-        Mockito.when(gitServiceApi.getBlameFile(newPath)).thenReturn(blameResult);
+        Mockito.when(gitServiceApi.getBlameFile(newPath, project)).thenReturn(blameResult);
 
         var rawText = Mockito.mock(RawText.class);
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);

@@ -6,6 +6,8 @@ import com.example.assigneeauto.presets.test.dto.ReviewerData;
 import com.example.assigneeauto.presets.test.ReviewerDataPreset;
 import org.gitlab4j.api.models.AccessLevel;
 
+import java.util.List;
+
 public class ReviewerPreset {
     public static Reviewer first() {
         var reviewerData = ReviewerDataPreset.first();
@@ -45,6 +47,7 @@ public class ReviewerPreset {
         reviewer.setMemberId(Long.parseLong(reviewerData.getId()));
         reviewer.setAccessLevelGitLab(AccessLevel.MAINTAINER);
         reviewer.setReviewAccess(reviewerData.isActive());
+        reviewer.setProjects(List.of(reviewerData.getProjectInfo()));
 
         var info = new ReviewerInfo();
         info.setReviewer(reviewer);

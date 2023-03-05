@@ -1,5 +1,6 @@
 package com.example.assigneeauto.presets.test;
 
+import com.example.assigneeauto.presets.domain.ProjectInfoPreset;
 import com.example.assigneeauto.presets.test.dto.ReviewerData;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class ReviewerDataPreset {
                 .username("test_1")
                 .email("test_1@mail.ru")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 
@@ -26,6 +28,7 @@ public class ReviewerDataPreset {
                 .username("test_2")
                 .email("test_2@mail.ru")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 
@@ -38,6 +41,7 @@ public class ReviewerDataPreset {
                 .username("test_3")
                 .email("test_3@mail.ru")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 
@@ -50,6 +54,7 @@ public class ReviewerDataPreset {
                 .username("test_4")
                 .email("test_4@mail.ru")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 
@@ -62,6 +67,7 @@ public class ReviewerDataPreset {
                 .username("test_5")
                 .email("test_5@mail.ru")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 
@@ -73,6 +79,7 @@ public class ReviewerDataPreset {
                 .name(List.of("inactive"))
                 .username("inactive")
                 .maxCountReview(4)
+                .projectInfo(ProjectInfoPreset.first())
                 .build();
     }
 }
