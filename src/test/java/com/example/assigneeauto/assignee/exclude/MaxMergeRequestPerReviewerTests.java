@@ -45,11 +45,11 @@ public class MaxMergeRequestPerReviewerTests {
         );
 
         Mockito.when(gitlabApiService.
-                getListMergeRequestByAssigneeId(first.getMemberId(), Constants.MergeRequestState.OPENED))
+                getListMergeRequestByAssigneeId(first.getMemberId(), Constants.MergeRequestState.OPENED, MergeRequestPreset.first().getProjectId().toString()))
                 .then(x -> firstMergeRequests);
 
         Mockito.when(gitlabApiService.
-                        getListMergeRequestByAssigneeId(second.getMemberId(), Constants.MergeRequestState.OPENED))
+                        getListMergeRequestByAssigneeId(second.getMemberId(), Constants.MergeRequestState.OPENED, MergeRequestPreset.first().getProjectId().toString()))
                 .then(x -> secondMergeRequests);
     }
 
