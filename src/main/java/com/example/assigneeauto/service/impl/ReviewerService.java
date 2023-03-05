@@ -31,8 +31,8 @@ public class ReviewerService implements ReviewerServiceApi {
     }
 
     @Override
-    public List<Reviewer> getAllActive() {
-        return reviewerRepository.findAllByReviewAccess(true);
+    public List<Reviewer> getAllActive(String projectId) {
+        return reviewerRepository.findAllByReviewAccessAndProjectId(true, projectId);
     }
 
     @Override

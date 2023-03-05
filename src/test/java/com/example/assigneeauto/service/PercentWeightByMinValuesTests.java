@@ -42,9 +42,9 @@ public class PercentWeightByMinValuesTests {
         var allReviewers = reviewers.stream()
                 .map(ReviewerWeight::getReviewer)
                 .toList();
-        Mockito.when(reviewerServiceApi.getAllActive())
-                .then(x -> allReviewers);
         var mergeRequest = MergeRequestPreset.first();
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString()))
+                .then(x -> allReviewers);
         for(var reviewer : reviewers) {
             var settings = PercentWeightByMinMaxSettings
                     .builder()
@@ -62,7 +62,6 @@ public class PercentWeightByMinValuesTests {
         var second = ReviewerPreset.second();
         var third = ReviewerPreset.third();
         var fourth = ReviewerPreset.fourth();
-        var fifth = ReviewerPreset.fifth();
         return Stream.of(
                 List.of(
                     new ReviewerWeight(first, 0L, 0),

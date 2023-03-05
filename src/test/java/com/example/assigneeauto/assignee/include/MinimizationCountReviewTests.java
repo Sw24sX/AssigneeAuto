@@ -8,7 +8,6 @@ import com.example.assigneeauto.service.ReviewerServiceApi;
 import lombok.SneakyThrows;
 import org.gitlab4j.api.Constants;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +36,7 @@ public class MinimizationCountReviewTests {
         var reviewer = ReviewerPreset.first();
         var mergeRequest = MergeRequestPreset.first();
 
-        Mockito.when(reviewerServiceApi.getAllActive()).then(x -> List.of(reviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).then(x -> List.of(reviewer));
         Mockito.when(gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED))
                 .then(x -> List.of(MergeRequestPreset.second()));
         var result = minimizationCountReview.getWeight(reviewer, mergeRequest);
@@ -50,7 +49,7 @@ public class MinimizationCountReviewTests {
         var reviewer = ReviewerPreset.first();
         var mergeRequest = MergeRequestPreset.first();
 
-        Mockito.when(reviewerServiceApi.getAllActive()).then(x -> List.of(reviewer, ReviewerPreset.second()));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).then(x -> List.of(reviewer, ReviewerPreset.second()));
         Mockito.when(gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED))
                 .then(x -> List.of(MergeRequestPreset.second()));
         Mockito.when(gitlabServiceApi.getListMergeRequestByAssigneeId(ReviewerPreset.second().getMemberId(), Constants.MergeRequestState.OPENED))
@@ -65,7 +64,7 @@ public class MinimizationCountReviewTests {
         var reviewer = ReviewerPreset.first();
         var mergeRequest = MergeRequestPreset.first();
 
-        Mockito.when(reviewerServiceApi.getAllActive()).then(x -> List.of(reviewer, ReviewerPreset.second(), ReviewerPreset.third()));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).then(x -> List.of(reviewer, ReviewerPreset.second(), ReviewerPreset.third()));
         Mockito.when(gitlabServiceApi.getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED))
                 .then(x -> List.of(MergeRequestPreset.second()));
         Mockito.when(gitlabServiceApi.getListMergeRequestByAssigneeId(ReviewerPreset.second().getMemberId(), Constants.MergeRequestState.OPENED))

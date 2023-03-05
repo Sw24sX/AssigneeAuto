@@ -16,10 +16,11 @@ public interface ReviewerServiceApi {
     List<Reviewer> getAll();
 
     /**
-     * Вернуть полный список доступных для назначения ревьюверов
-     * @return список ревьюверов
+     * Вернуть полный список доступных для назначения ревьюверов в заданном проекте
+     * @param projectId Идентификатор проекта в GitLab
+     * @return список доступных для назначения ревьюверов
      */
-    List<Reviewer> getAllActive();
+    List<Reviewer> getAllActive(String projectId);
 
     /**
      * Получить ревьювера по id

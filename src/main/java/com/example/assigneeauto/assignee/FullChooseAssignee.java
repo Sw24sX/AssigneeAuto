@@ -24,7 +24,7 @@ public class FullChooseAssignee {
     }
 
     public Reviewer getAssignee(MergeRequest mergeRequest) {
-        List<Reviewer> reviewers = excludeReviewers(reviewerServiceApi.getAllActive(), mergeRequest);
+        List<Reviewer> reviewers = excludeReviewers(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString()), mergeRequest);
         if (reviewers.size() <= 1) {
             return reviewers.stream()
                     .findFirst()

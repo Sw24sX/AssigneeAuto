@@ -7,7 +7,7 @@ import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.repository.HistoryReviewRepository;
 import com.example.assigneeauto.service.GitlabServiceApi;
 import com.example.assigneeauto.service.MergeRequestServiceApi;
-import com.example.assigneeauto.service.ReviewerServiceApi;
+import com.example.assigneeauto.service.ProjectInfoServiceApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
@@ -26,7 +26,7 @@ public class MergeRequestService implements MergeRequestServiceApi {
     private final GitlabServiceApi gitlabServiceApi;
     private final FullChooseAssignee fullChooseAssignee;
     private final HistoryReviewRepository historyReviewRepository;
-    private final ReviewerServiceApi reviewerServiceApi;
+    private final ProjectInfoServiceApi projectInfoServiceApi;
 
     @Override
     public void setAssignee(Long mergeRequestIid, Reviewer reviewer) {
@@ -75,6 +75,10 @@ public class MergeRequestService implements MergeRequestServiceApi {
             log.warn("Merge request {} was ignored, because assignee already exists", mergeRequestIid);
             return false;
         }
+        if (!projectInfoServiceApi.isProjectEnable(mergeRequest.getProjectId().toString())) {
+            log.warn("Merge request {} was ignored, because project with id {} was disabled for auto assignee", mergeRequestIid, mergeRequest.getProjectId());
+            return false;
+        }
 
         return setAutoAssignee(mergeRequest);
     }
@@ -94,17 +98,17 @@ public class MergeRequestService implements MergeRequestServiceApi {
 
     private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest, boolean result) {
         var taskBranch = mergeRequest.getSourceBranch();
-        if (!historyReviewRepository.existsByMergeRequestIid(mergeRequest.getIid())) {
-            var historyReview = new HistoryReview();
-            historyReview.setReviewer(reviewer);
-            historyReview.setBranchName(taskBranch);
-            historyReview.setMergeRequestIid(mergeRequest.getIid());
-            historyReview.setMergeRequestName(mergeRequest.getTitle());
-            historyReview.setSuccess(result);
-            historyReview = historyReviewRepository.save(historyReview);
-//            reviewer.getHistoryReviews().add(historyReview);
+        if (historyReviewRepository.existsByMergeRequestIid(mergeRequest.getIid())) {
+            log.warn("History review for merge request with Iid {} already exists", mergeRequest.getIid());
+            return;
         }
 
-//        reviewerServiceApi.saveReviewer(reviewer);
+        var historyReview = new HistoryReview();
+        historyReview.setReviewer(reviewer);
+        historyReview.setBranchName(taskBranch);
+        historyReview.setMergeRequestIid(mergeRequest.getIid());
+        historyReview.setMergeRequestName(mergeRequest.getTitle());
+        historyReview.setSuccess(result);
+        historyReviewRepository.save(historyReview);
     }
 }

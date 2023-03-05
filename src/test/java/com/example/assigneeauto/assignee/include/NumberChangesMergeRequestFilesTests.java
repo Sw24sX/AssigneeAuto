@@ -2,17 +2,14 @@ package com.example.assigneeauto.assignee.include;
 
 import com.example.assigneeauto.assignee.choose.assignee.NumberChangesMergeRequestFiles;
 import com.example.assigneeauto.presets.domain.ReviewerPreset;
-import com.example.assigneeauto.presets.test.GitEntryPreset;
 import com.example.assigneeauto.presets.test.MergeRequestPreset;
 import com.example.assigneeauto.repository.cache.NumberChangesMergeRequestCacheRepository;
 import com.example.assigneeauto.service.GitServiceApi;
 import com.example.assigneeauto.service.ReviewerServiceApi;
-import com.example.assigneeauto.service.impl.ReviewerService;
 import org.eclipse.jgit.blame.BlameResult;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.lib.PersonIdent;
-import org.gitlab4j.api.models.MergeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -73,7 +70,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(blameResult.getSourceAuthor(1)).thenReturn(secondPerson);
         Mockito.when(blameResult.getSourceAuthor(2)).thenReturn(secondPerson);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(reviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(reviewer));
         var result = numberChangesMergeRequestFiles.getWeight(reviewer, mergeRequest);
         assertThat(result).isEqualTo(0);
     }
@@ -102,7 +99,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(blameResult.getSourceAuthor(1)).thenReturn(person);
         Mockito.when(blameResult.getSourceAuthor(2)).thenReturn(person);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(reviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(reviewer));
         var result = numberChangesMergeRequestFiles.getWeight(reviewer, mergeRequest);
         assertThat(result).isEqualTo(0);
     }
@@ -115,7 +112,7 @@ public class NumberChangesMergeRequestFilesTests {
 
         Mockito.when(gitServiceApi.getDiffBranches(branch)).thenReturn(List.of());
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(reviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(reviewer));
         var result = numberChangesMergeRequestFiles.getWeight(reviewer, mergeRequest);
         assertThat(result).isEqualTo(0);
     }
@@ -137,7 +134,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(blameResult.getResultContents()).thenReturn(rawText);
         Mockito.when(rawText.size()).thenReturn(0);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(reviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(reviewer));
         var result = numberChangesMergeRequestFiles.getWeight(reviewer, mergeRequest);
         assertThat(result).isEqualTo(0);
     }
@@ -170,7 +167,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(blameResult.getSourceAuthor(2)).thenReturn(secondPerson);
         Mockito.when(blameResult.getSourceAuthor(3)).thenReturn(secondPerson);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(firstReviewer, secondReviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(firstReviewer, secondReviewer));
         var firstReviewerResult = numberChangesMergeRequestFiles.getWeight(firstReviewer, mergeRequest);
         assertThat(firstReviewerResult).isEqualTo(0);
         var secondReviewerResult = numberChangesMergeRequestFiles.getWeight(secondReviewer, mergeRequest);
@@ -216,7 +213,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(secondBlameResult.getSourceAuthor(0)).thenReturn(secondPerson);
         Mockito.when(secondBlameResult.getSourceAuthor(1)).thenReturn(secondPerson);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(firstReviewer, secondReviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(firstReviewer, secondReviewer));
         var firstReviewerResult = numberChangesMergeRequestFiles.getWeight(firstReviewer, mergeRequest);
         assertThat(firstReviewerResult).isEqualTo(0);
         var secondReviewerResult = numberChangesMergeRequestFiles.getWeight(secondReviewer, mergeRequest);
@@ -255,7 +252,7 @@ public class NumberChangesMergeRequestFilesTests {
         Mockito.when(blameResult.getSourceAuthor(4)).thenReturn(thirdPerson);
         Mockito.when(blameResult.getSourceAuthor(5)).thenReturn(thirdPerson);
 
-        Mockito.when(reviewerServiceApi.getAllActive()).thenReturn(List.of(firstReviewer, secondReviewer));
+        Mockito.when(reviewerServiceApi.getAllActive(mergeRequest.getProjectId().toString())).thenReturn(List.of(firstReviewer, secondReviewer));
         var firstReviewerResult = numberChangesMergeRequestFiles.getWeight(firstReviewer, mergeRequest);
         assertThat(firstReviewerResult).isEqualTo(0);
         var secondReviewerResult = numberChangesMergeRequestFiles.getWeight(secondReviewer, mergeRequest);

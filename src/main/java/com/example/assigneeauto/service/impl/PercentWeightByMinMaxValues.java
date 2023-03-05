@@ -25,7 +25,7 @@ public class PercentWeightByMinMaxValues implements PercentWeightByMinMaxValuesA
     public Integer getCorrectWeight(PercentWeightByMinMaxSettings settings) {
         var minCount = Long.MAX_VALUE;
         var maxCount = Long.MIN_VALUE;
-        for (Reviewer activeReviewer : reviewerServiceApi.getAllActive()) {
+        for (Reviewer activeReviewer : reviewerServiceApi.getAllActive(settings.getMergeRequest().getProjectId().toString())) {
             var count = settings.getWeightByNotValuesApi().getPersonalWeight(activeReviewer, settings.getMergeRequest());
             maxCount = Math.max(maxCount, count);
             minCount = Math.min(minCount, count);
