@@ -22,7 +22,7 @@ public class ProjectController {
     public ModelAndView getAll() {
         var projects = projectInfoServiceApi.getAll();
         var result = new ModelAndView("project/list");
-        result.addObject("projects", projects.stream().map(projectInfoMapper::to).collect(Collectors.toList()));
+        result.addObject("projects", projects.stream().map(projectInfoMapper::toDto).collect(Collectors.toList()));
         return result;
     }
 
@@ -30,7 +30,7 @@ public class ProjectController {
     public ModelAndView create() {
         var createdProject = projectInfoServiceApi.initNew();
         var result = new ModelAndView("project/edit");
-        result.addObject("project", projectInfoMapper.to(createdProject));
+        result.addObject("project", projectInfoMapper.toDto(createdProject));
         return result;
     }
 
@@ -38,7 +38,7 @@ public class ProjectController {
     public ModelAndView changeById(@RequestParam(name = "change") Long id) {
         var project = projectInfoServiceApi.getById(id);
         var result = new ModelAndView("project/edit");
-        result.addObject("project", projectInfoMapper.to(project));
+        result.addObject("project", projectInfoMapper.toDto(project));
         return result;
     }
 

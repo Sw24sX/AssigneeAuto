@@ -2,6 +2,7 @@ package com.example.assigneeauto.persistance.mapper;
 
 import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import com.example.assigneeauto.persistance.dto.web.ProjectInfoDto;
+import com.example.assigneeauto.persistance.dto.web.ProjectInfoReviewerDto;
 import org.gitlab4j.api.models.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,12 +17,16 @@ public interface ProjectInfoMapper {
     void updateProjectInfo(ProjectInfo source, @MappingTarget ProjectInfo target);
 
     @Mapping(target = "projectId", source = "id")
+    @Mapping(target = "isAutoAssigneeEnable", ignore = true)
     @Mapping(target = "id", ignore = true)
     ProjectInfo from(Project project);
 
     @Mapping(target = "isEnabled", source = "isAutoAssigneeEnable")
-    ProjectInfoDto to(ProjectInfo info);
+    ProjectInfoDto toDto(ProjectInfo info);
 
     @Mapping(target = "isAutoAssigneeEnable", source = "isEnabled")
     ProjectInfo from(ProjectInfoDto dto);
+
+    @Mapping(target = "checked", ignore = true)
+    ProjectInfoReviewerDto toReviewerProjectInfoDto(ProjectInfo info);
 }

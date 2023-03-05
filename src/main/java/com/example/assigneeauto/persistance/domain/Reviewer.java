@@ -36,6 +36,11 @@ public class Reviewer extends BaseEntity {
     @OneToOne(mappedBy = "reviewer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ReviewerInfo info;
 
-    @ManyToMany(mappedBy = "reviewers")
+    @ManyToMany
+    @JoinTable(
+            name = "reviewer_project_info",
+            joinColumns = @JoinColumn(name = "reviewer_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_info_id")
+    )
     private List<ProjectInfo> projects;
 }

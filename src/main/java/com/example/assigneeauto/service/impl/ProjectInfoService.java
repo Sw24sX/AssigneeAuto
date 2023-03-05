@@ -67,4 +67,9 @@ public class ProjectInfoService implements ProjectInfoServiceApi {
         result.setIsAutoAssigneeEnable(true);
         return result;
     }
+
+    @Override
+    public List<ProjectInfo> getAllByIds(List<Long> ids) {
+        return projectInfoRepository.findAllById(ids);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.assigneeauto.service.impl;
 
+import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.domain.ReviewerInfo;
 import com.example.assigneeauto.persistance.mapper.ReviewerMapper;
@@ -51,7 +52,7 @@ public class ReviewerService implements ReviewerServiceApi {
 
     @Override
     @Transactional
-    public Map<String, String> updateReviewer(Reviewer updated) {
+    public Map<String, String> updateReviewer(Reviewer updated, List<ProjectInfo> projects) {
         var reviewer = getById(updated.getId());
         if (reviewer == null) {
             var errors = new HashMap<String, String>();
@@ -59,13 +60,14 @@ public class ReviewerService implements ReviewerServiceApi {
             return errors;
         }
         reviewerMapper.updateReviewer(updated, reviewer);
+        reviewer.setProjects(projects);
         reviewerRepository.save(reviewer);
         return new HashMap<>();
     }
 
     @SneakyThrows
     @Override
-    public Map<String, String> createReviewer(Reviewer created) {
+    public Map<String, String> createReviewer(Reviewer created, List<ProjectInfo> projects) {
         var info = new ReviewerInfo();
         var reviewer = new Reviewer();
         info.setReviewer(reviewer);

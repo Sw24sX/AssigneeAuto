@@ -1,5 +1,6 @@
 package com.example.assigneeauto.service;
 
+import com.example.assigneeauto.persistance.domain.ProjectInfo;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 
 import java.util.List;
@@ -36,13 +37,20 @@ public interface ReviewerServiceApi {
     void deleteReviewer(Long id);
 
     /**
-     * Обновление или создание ревьювера
-     * @param updated Новые данные о ревьювере
+     * Создание ревьювера
+     * @param updated Данные о ревьювере
+     * @param projects Список подключаемых проектов
+     * @return Список ошибок при создании
+     */
+    Map<String, String> updateReviewer(Reviewer updated, List<ProjectInfo> projects);
+
+    /**
+     * Обновление ревьювера
+     * @param created Новые данные о ревьювере
+     * @param projects Список подключаемых проектов
      * @return Список ошибок при обновлении
      */
-    Map<String, String> updateReviewer(Reviewer updated);
-
-    Map<String, String> createReviewer(Reviewer created);
+    Map<String, String> createReviewer(Reviewer created, List<ProjectInfo> projects);
 
     /**
      * Создает и заполняет начальными данными нового ревьювера

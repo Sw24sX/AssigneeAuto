@@ -20,11 +20,11 @@ public class ProjectInfo extends BaseEntity {
     @Column(name = "auto_assignee_enable")
     private Boolean isAutoAssigneeEnable;
 
-    @ManyToMany
-    @JoinTable(
-            name = "reviewer_project_info",
-            joinColumns = @JoinColumn(name = "project_info_id"),
-            inverseJoinColumns = @JoinColumn(name = "reviewer_id")
-    )
-    private List<Reviewer> reviewers;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "reviewer_project_info",
+//            joinColumns = @JoinColumn(name = "project_info_id"),
+//            inverseJoinColumns = @JoinColumn(name = "reviewer_id")
+//    )
+//    private List<Reviewer> reviewers;
 }
