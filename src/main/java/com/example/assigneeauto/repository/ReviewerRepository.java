@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReviewerRepository extends JpaRepository<Reviewer, Long> {
-    @Query("select r from Reviewer r join ProjectInfo pi where pi.projectId = :projectId and r.isReviewAccess = :reviewAccess ")
+    @Query("select r from Reviewer r join r.projects pi where pi.projectId = :projectId and r.isReviewAccess = :reviewAccess ")
     List<Reviewer> findAllByReviewAccessAndProjectId(boolean reviewAccess, String projectId);
 
     boolean existsByUsername(String username);

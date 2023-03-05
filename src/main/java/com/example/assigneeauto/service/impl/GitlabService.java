@@ -51,7 +51,6 @@ public class GitlabService implements GitlabServiceApi {
     }
 
     @Override
-    @Cacheable(value = "merge-request", key = "#iid")
     public Optional<MergeRequest> getMergeRequest(Long iid, String projectId) {
         return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(projectId, iid);
     }

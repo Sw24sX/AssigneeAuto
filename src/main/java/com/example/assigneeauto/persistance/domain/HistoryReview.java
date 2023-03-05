@@ -15,10 +15,13 @@ public class HistoryReview extends BaseEntity {
 
     private String branchName;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "reviewer_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reviewer_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Reviewer reviewer;
+
+    @Column(name = "reviewer_id")
+    private Long reviewerId;
 
     private Long mergeRequestIid;
 

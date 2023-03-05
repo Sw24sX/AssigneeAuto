@@ -5,6 +5,7 @@ import com.example.assigneeauto.persistance.domain.HistoryReview;
 import com.example.assigneeauto.persistance.domain.Reviewer;
 import com.example.assigneeauto.persistance.exception.AutoAssigneeException;
 import com.example.assigneeauto.repository.HistoryReviewRepository;
+import com.example.assigneeauto.repository.ReviewerRepository;
 import com.example.assigneeauto.service.GitlabServiceApi;
 import com.example.assigneeauto.service.MergeRequestServiceApi;
 import com.example.assigneeauto.service.ProjectInfoServiceApi;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class MergeRequestService implements MergeRequestServiceApi {
+    private final ReviewerRepository reviewerRepository;
 
     private final GitlabServiceApi gitlabServiceApi;
     private final FullChooseAssignee fullChooseAssignee;
@@ -103,12 +105,14 @@ public class MergeRequestService implements MergeRequestServiceApi {
             return;
         }
 
+//        var updatedReviewer = reviewerRepository.save(reviewer);
         var historyReview = new HistoryReview();
-        historyReview.setReviewer(reviewer);
+        historyReview.setReviewerId(reviewer.getId());
         historyReview.setBranchName(taskBranch);
         historyReview.setMergeRequestIid(mergeRequest.getIid());
         historyReview.setMergeRequestName(mergeRequest.getTitle());
         historyReview.setSuccess(result);
         historyReviewRepository.save(historyReview);
+//        reviewerRepository.save(updatedReviewer);
     }
 }

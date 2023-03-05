@@ -76,7 +76,6 @@ public class GitService implements GitServiceApi {
     }
 
     @Override
-    @Cacheable(value = "diff-branches", key = "#sourceBranch")
     public List<DiffEntry> getDiffBranches(String sourceBranch, String targetBranch, ProjectInfo projectInfo) {
 
         var path = getPath(projectInfo);
@@ -111,7 +110,7 @@ public class GitService implements GitServiceApi {
     }
 
     @Override
-    @Cacheable(value = "blame-file", key = "#fileFromRepo")
+//    @Cacheable(value = "blame-file", key = "#fileFromRepo")
     public BlameResult getBlameFile(String fileFromRepo, ProjectInfo projectInfo) {
 
         var path = getPath(projectInfo);
