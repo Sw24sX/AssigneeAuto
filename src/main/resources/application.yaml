@@ -3,18 +3,18 @@ auto-assignee:
     part:
       number-changes-merge-request-files:
         coefficient: '1'
-        enable: 'true'
+        enable: 'false'
       minimize-count-review:
         coefficient: '1'
-        enable: 'false'
+        enable: 'true'
   excluded:
     part:
       max-merge-request-per-reviewer:
-        enable: 'false'
+        enable: 'true'
       review-task-branch:
-        enable: 'false'
+        enable: 'true'
       exclude-author:
-        enable: 'false'
+        enable: 'true'
 
 git:
   lab:
